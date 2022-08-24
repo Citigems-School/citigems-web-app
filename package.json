@@ -1,0 +1,65 @@
+{
+  "name": "citigems-web-app",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@ant-design/icons": "^4.7.0",
+    "@craco/craco": "^6.4.5",
+    "@firebase/database-types": "^0.9.12",
+    "@reduxjs/toolkit": "^1.8.0",
+    "@ricons/fluent": "^0.12.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.11.49",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "antd": "^4.22.6",
+    "craco-less": "^2.0.0",
+    "dotenv": "^16.0.1",
+    "firebase": "^9.9.2",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
+    "react-loader-spinner": "^5.1.7-beta.1",
+    "react-redux": "^8.0.2",
+    "react-router-dom": "6",
+    "react-scripts": "5.0.1",
+    "react-spinners": "^0.13.4",
+    "typescript": "^4.7.4",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "NODE_ENV=development craco start",
+    "start:prod": "NODE_ENV=production eact-app-rewired start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.183",
+    "@types/react-helmet": "^6.1.5",
+    "less": "^4.1.3",
+    "less-loader": "^11.0.0"
+  }
+}
