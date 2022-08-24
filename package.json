@@ -34,7 +34,7 @@
   "scripts": {
     "start": "NODE_ENV=development craco start",
     "start:prod": "NODE_ENV=production eact-app-rewired start",
-    "build": "craco build",
+    "build": "NODE_ENV=development craco build",
     "test": "craco test",
     "eject": "craco eject"
   },
