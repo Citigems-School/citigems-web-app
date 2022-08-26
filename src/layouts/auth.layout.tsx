@@ -1,7 +1,9 @@
 import { Outlet } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import useRedirectToDashboard from "../hooks/redirects/useRedirect";
 
 const AuthLayout = () => {
+    useRedirectToDashboard();
     return (
         <>
             <Helmet>

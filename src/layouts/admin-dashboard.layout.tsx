@@ -1,15 +1,13 @@
 import Icon, {
-    DesktopOutlined,
-    FileOutlined,
     PieChartOutlined,
     TeamOutlined,
     UserOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu } from 'antd';
+import {  Layout, Menu } from 'antd';
 import React, { ForwardRefExoticComponent, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import useRedirectToLogin from "../hooks/redirects/useRedirectToLogin";
+import useRedirect from "../hooks/redirects/useRedirect";
 import { xor } from "lodash";
 import { Class20Regular, DocumentOnePage20Regular, DocumentText20Regular } from '@ricons/fluent';
 import { useAppThunkDispatch } from '../store/store';
@@ -21,7 +19,7 @@ import { getTeachers } from '../store/reducers/teachersSlice';
 import { getClasses } from '../store/reducers/classesSlice';
 import { Helmet } from 'react-helmet';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -91,7 +89,7 @@ const AdminDashboardLayout = () => {
         selectedMenuItems[0] + "/" + selectedMenuItems[1],
         selectedMenuItems[0]
     ]);
-    useRedirectToLogin();
+    useRedirect();
     const thunkDispatch = useAppThunkDispatch();
 
     useEffect(() => {
@@ -102,7 +100,7 @@ const AdminDashboardLayout = () => {
         thunkDispatch(getTeachers());
         thunkDispatch(getClasses());
 
-    }, []);
+    }, [thunkDispatch]);
 
     return (
         <>
@@ -114,9 +112,9 @@ const AdminDashboardLayout = () => {
                         <div style={{ padding: "20px 10px" }}>
                             {
                                 collapsed ?
-                                    <img src="/images/logo/logo-icon-yellow-only.png" width="100%" />
+                                    <img alt="logo" src="/images/logo/logo-icon-yellow-only.png" width="100%" />
                                     :
-                                    <img src="/images/logo/logo-fulltext.png" width="100%" />
+                                    <img alt="logo" src="/images/logo/logo-fulltext.png" width="100%" />
                             }
                         </div>
                         <Menu theme="dark" mode="inline" items={items} defaultSelectedKeys={[selectedMenuItem]}

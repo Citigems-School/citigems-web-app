@@ -1,42 +1,46 @@
-import { Grid, Card, Typography, Row, Button, Form, Input, message } from "antd";
+import { Grid, Card, Typography, Row, Button, Form, Input, message, Alert } from "antd";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { loginAdmin } from "../../store/reducers/userSlice";
 import { RootState, useAppThunkDispatch } from "../../store/store";
 import Container from "../public.components/container.component";
 import { isNil } from "lodash";
+import { useState } from "react";
+
+const { ErrorBoundary } = Alert;
 
 const LoginCard = () => {
+
+    const { pathname } = useLocation();
+    const [showError, setShowError] = useState<boolean>(false);
 
     const thunkDispatch = useAppThunkDispatch();
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
-    const { user, loading, error } = useSelector((state: RootState) => state.user);
+    const { user, loading, error, isFetched } = useSelector((state: RootState) => state.user);
 
     const loginHandler = () => {
         return form.validateFields().then(async () => {
-            return thunkDispatch(loginAdmin({
-                email: form.getFieldValue("email"),
-                password: form.getFieldValue("password")
-            })).then(({ type }) => {
+            try {
+                await thunkDispatch(loginAdmin({
+                    email: form.getFieldValue("email"),
+                    password: form.getFieldValue("password")
+                }))
                 form.resetFields();
                 if (user && isNil(error)) {
-                    console.log("Hello :) ");
                     navigate("/admin/dashboard/");
                     return;
-                }
-                if (isNil(user) || error) {
-                    console.log("Triggered 404")
-                    message.error("Authentication failed, please check your credentials")
+                } else if ((isNil(user) || error) && pathname === "/auth/login") {
+                    setShowError(true);
                     return;
                 }
-            }).catch(e => {
-                console.log("Triggered 500")
+            }
+            catch (e) {
                 message.error("Authentication failed, please try again")
                 console.error(e);
-            });
+            };
 
         });
     }
@@ -83,6 +87,16 @@ const LoginCard = () => {
                             <Input type={"password"} />
                         </Form.Item>
                         <Row justify={"center"}>
+                            {showError &&
+                                    <Alert
+                                        message="Error Authentication"
+                                        showIcon
+                                        description="E-mail or password wrong, please try again"
+                                        type="error"
+                                        closable
+                                        style={{ marginBottom: '15px' }}
+                                    />
+                            }
                             <Button style={{ width: '150px' }} loading={loading} type="primary" onClick={loginHandler}>
                                 Login
                             </Button>
