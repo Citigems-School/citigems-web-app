@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { child, equalTo, get, orderByChild, push, query, ref, remove, update } from 'firebase/database';
-import _, { isNil, omitBy } from 'lodash';
+import _, { defaults, isNil, omitBy } from 'lodash';
 import { toArray } from 'lodash';
 import { ErrorResponse } from '../../models/ErrorResponse';
-import { User } from '../../models/User';
+import { User, userDefaultObject } from '../../models/User';
 import { db } from '../../utils/firebase';
 
 interface UsersState {
@@ -126,9 +126,9 @@ export const addUser = createAsyncThunk(
   'users/addUser',
   async (payload: User, { rejectWithValue }) => {
     try {
-      const response = await push(ref(db, '/app_users/'), omitBy(payload, isNil))
+      const response = await push(ref(db, '/app_users/'), omitBy(defaults(payload,userDefaultObject), isNil))
       const userObjectWithId = {
-        ...payload,
+        ...defaults(payload,userDefaultObject),
         user_id: response.key
       }
       const refDb = ref(db);

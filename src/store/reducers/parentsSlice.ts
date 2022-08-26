@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { child, equalTo, get, orderByChild, push, query, ref, remove, update } from 'firebase/database';
-import _, { isNil, omitBy } from 'lodash';
+import _, { defaults, isNil, omitBy } from 'lodash';
 import { toArray } from 'lodash';
 import { ErrorResponse } from '../../models/ErrorResponse';
 import { db } from '../../utils/firebase';
-import { Parent } from '../../models/Parent';
+import { Parent, parentDefaultObject } from '../../models/Parent';
 
 interface ParentsState {
     parents: Parent[],
@@ -64,11 +64,11 @@ export const editParent = createAsyncThunk(
             const refDb = ref(db);
             const updates = {}
             //@ts-ignore
-            updates['/stakeholders/parents/' + payload.objectKey] = omitBy(payload, isNil);
+            updates['/stakeholders/parents/' + payload.objectKey] = omitBy(defaults(payload,parentDefaultObject), isNil);
             update(refDb, updates);
             return {
                 code: 200,
-                response: payload
+                response: defaults(payload,parentDefaultObject)
             }
         } catch (e) {
             console.error(e);
@@ -82,7 +82,7 @@ export const addParent = createAsyncThunk(
     'Parents/addParent',
     async (payload: Parent, { rejectWithValue }) => {
         try {
-            const response = await push(ref(db, '/stakeholders/parents/'), omitBy(payload, isNil))
+            const response = await push(ref(db, '/stakeholders/parents/'), omitBy(defaults(payload,parentDefaultObject), isNil))
             const ParentObjectWithId = {
                 ...payload,
                 objectKey: response.key

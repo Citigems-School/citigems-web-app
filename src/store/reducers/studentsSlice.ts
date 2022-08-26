@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { child, equalTo, get, orderByChild, push, query, ref, remove, update } from 'firebase/database';
-import _, { isNil, omitBy } from 'lodash';
+import _, { defaults, isNil, omitBy } from 'lodash';
 import { toArray } from 'lodash';
 import { ErrorResponse } from '../../models/ErrorResponse';
 import { db } from '../../utils/firebase';
-import { Student } from '../../models/Student';
+import { Student, studentDefaultObject } from '../../models/Student';
 
 interface StudentsState {
     students: {
@@ -85,7 +85,7 @@ export const editStudent = createAsyncThunk(
             const refDb = ref(db);
             const updates = {}
             //@ts-ignore
-            updates[`/stakeholders/students/${payload.type}/` + payload.student.student_key] = omitBy(payload.student, isNil);
+            updates[`/stakeholders/students/${payload.type}/` + payload.student.student_key] = omitBy(defaults(payload.student,studentDefaultObject), isNil);
             await update(refDb, updates);
             return {
                 code: 200,
@@ -105,9 +105,9 @@ export const addStudent = createAsyncThunk(
     async (payload: { type: string, student: Student }, { rejectWithValue }) => {
         try {
             const dbUrl = '/stakeholders/students/' + payload.type + "/";
-            const response = await push(ref(db, dbUrl), omitBy(payload.student, isNil))
+            const response = await push(ref(db, dbUrl), omitBy(defaults(payload.student,studentDefaultObject), isNil))
             const studentObjectWithId = {
-                ...payload.student,
+                ...defaults(payload.student),
                 student_key: response.key
             }
             const updates = {}

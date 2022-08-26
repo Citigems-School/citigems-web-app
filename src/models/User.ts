@@ -13,3 +13,19 @@ export interface User{
     user_id: string;
     whatsapp_number: string;
 }
+
+export const userDefaultObject : User = {
+    child_key: "",
+    email: "",
+    enrolled: "",
+    first_name: "",
+    has_child_in_citigems: "",
+    last_name: "",
+    other_numbers: "",
+    parent_key: "",
+    photo_url: "",
+    role: "",
+    selected_role: "",
+    user_id: "",
+    whatsapp_number: ""
+}

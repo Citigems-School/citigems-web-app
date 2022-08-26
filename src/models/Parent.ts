@@ -12,3 +12,18 @@ export interface Parent {
     user_id: string;
     whatsapp_number: string;
 }
+
+export const parentDefaultObject : Parent = {
+    objectKey: "",
+    child_name: "",
+    email: "",
+    name: "",
+    number_of_children: "",
+    other_phone_numbers: "",
+    place_of_work: "",
+    profession: "",
+    relationship: "",
+    telegram_number: "",
+    user_id: "",
+    whatsapp_number: ""
+}

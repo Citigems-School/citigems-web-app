@@ -4,7 +4,7 @@ import _, { isNil, omitBy } from 'lodash';
 import { toArray } from 'lodash';
 import { ErrorResponse } from '../../models/ErrorResponse';
 import { db } from '../../utils/firebase';
-import { Teacher } from '../../models/Teacher';
+import { Teacher, teacherDefaultObject } from '../../models/Teacher';
 
 interface TeachersState {
     teachers: Teacher[],
@@ -64,7 +64,7 @@ export const editTeacher = createAsyncThunk(
             const refDb = ref(db);
             const updates = {}
             //@ts-ignore
-            updates['/stakeholders/teachers/' + payload.objectKey] = omitBy(payload, isNil);
+            updates['/stakeholders/teachers/' + payload.objectKey] = omitBy(defaults(payload,teacherDefaultObject), isNil);
             update(refDb, updates);
             return {
                 code: 200,
@@ -82,7 +82,7 @@ export const addTeacher = createAsyncThunk(
     'Teachers/addTeacher',
     async (payload: Teacher, { rejectWithValue }) => {
         try {
-            const response = await push(ref(db, '/stakeholders/teachers/'), omitBy(payload, isNil))
+            const response = await push(ref(db, '/stakeholders/teachers/'), omitBy(defaults(payload,teacherDefaultObject), isNil))
             const TeacherObjectWithId = {
                 ...payload,
                 objectKey: response.key
@@ -183,3 +183,7 @@ export const errorTeachers = (state: TeachersState) => state.error;
 export const { } = teachersSlice.actions
 
 export default teachersSlice.reducer;
+
+function defaults(payload: Teacher, teacherDefaultObject: Teacher): any {
+    throw new Error('Function not implemented.');
+}

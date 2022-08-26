@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { child, equalTo, get, orderByChild, push, query, ref, remove, update } from 'firebase/database';
-import _, { isNil, omitBy } from 'lodash';
+import _, { defaults, isNil, omitBy } from 'lodash';
 import { toArray } from 'lodash';
 import { ErrorResponse } from '../../models/ErrorResponse';
-import { Admin } from '../../models/Admin';
+import { Admin, adminDefaultObject } from '../../models/Admin';
 import { db } from '../../utils/firebase';
 
 interface AdminsState {
@@ -82,7 +82,7 @@ export const addAdmin = createAsyncThunk(
     'Admins/addAdmin',
     async (payload: Admin, { rejectWithValue }) => {
         try {
-            const response = await push(ref(db, '/stakeholders/admin/'), omitBy(payload, isNil))
+            const response = await push(ref(db, '/stakeholders/admin/'), omitBy(defaults(payload,adminDefaultObject), isNil))
             const AdminObjectWithId = {
                 ...payload,
                 objectKey: response.key
