@@ -1,17 +1,20 @@
 import { isNil } from "lodash";
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Location, useLocation, useNavigate, useParams } from "react-router-dom";
 import useAuth from "../useAuth";
 
 const useRedirectToDashboard = () => {
+    const { pathname } = useLocation();
+
+
     const navigate = useNavigate();
     const { isFetched, user } = useAuth();
 
     useEffect(() => {
         if (isFetched) {
-            if (!isNil(user) && user.role === "admin") {
+            if (!isNil(user) && user.role === "admin" && !pathname.includes("auth")) {
                 navigate("/admin/dashboard/")
-            } else {
+            } else if (!pathname.includes("admin")) {
                 navigate("/auth/login")
             }
         }
