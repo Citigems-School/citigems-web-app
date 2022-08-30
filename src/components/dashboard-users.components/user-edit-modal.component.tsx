@@ -1,5 +1,6 @@
 import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
+import { isNil } from "lodash";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Parent } from "../../models/Parent";
@@ -19,7 +20,7 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
     const { loading } = useSelector((state: RootState) => state.users);
     const { parents } = useSelector((state: RootState) => state.parents);
     const { students } = useSelector((state: RootState) => state.students);
-    
+
     const thunkDispatch = useAppThunkDispatch();
 
     const [form] = useForm();
@@ -58,7 +59,11 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
                 onFinish={handleSubmit}
                 form={form}
                 size={"large"}
-                initialValues={user}
+                initialValues={{
+                    ...user,
+                    parent: !isNil(user) && user.parent_key !== "" ? user.parent_key : undefined,
+                    child_key: !isNil(user) && user.child_key !== "" ? (user.child_key as string).split(', ') : undefined
+                }}
             >
                 <Row gutter={[24, 0]}>
                     <Col xs={24} lg={12}>
@@ -136,7 +141,7 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
                         <Form.Item
                             name="parent_key"
                             label="Parent">
-                            <Select placeholder="Parent">
+                            <Select value={!isNil(user) && form.getFieldValue('parent_key') !== "" ? form.getFieldValue('parent_key') : undefined} placeholder="Parent">
                                 {
                                     parents.map(
                                         (parent: Parent) => <Option value={parent.objectKey}>
@@ -153,7 +158,8 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
                         <Form.Item
                             name="child_key"
                             label="Child">
-                            <Select placeholder="Child">
+                            <Select allowClear showArrow mode="multiple"
+                                placeholder="Child">
                                 {
                                     students.registered.concat(students.unregistered).map(
                                         (student: Student) => <Option value={student.student_key}>

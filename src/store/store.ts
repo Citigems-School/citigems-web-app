@@ -18,11 +18,7 @@ export const store = configureStore({
     students: studentsReducer,
     teachers: teachersReducer,
     classes: classesReducer
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false
-    }),
+  }
 });
 
 export type RootState = ReturnType<typeof store.getState>

@@ -1,20 +1,24 @@
 import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
+import { isNil } from "lodash";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Admin } from "../../../models/Admin";
 import { User } from "../../../models/User";
 import { addAdmin } from "../../../store/reducers/adminsSlice";
-import { addUser } from "../../../store/reducers/usersSlice";
+import { removeUser } from "../../../store/reducers/usersSlice";
 import { RootState, useAppThunkDispatch } from "../../../store/store";
-import UserAddModal from "../../dashboard-users.components/user-add-modal.component";
 
 
 interface AdminStackholderAddModalProps {
     isOpen: boolean;
     closeModal: () => void;
+    defaultObject?: Admin;
+    closeAddUserModal? : () => void;
+
 }
 
-const AdminStackholderAddModal = ({ isOpen, closeModal }: AdminStackholderAddModalProps) => {
+const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal,closeAddUserModal }: AdminStackholderAddModalProps) => {
 
     const { users } = useSelector((state: RootState) => state.users);
     const { loading } = useSelector((state: RootState) => state.admins);
@@ -28,6 +32,10 @@ const AdminStackholderAddModal = ({ isOpen, closeModal }: AdminStackholderAddMod
     const handleCancel = () => {
         form.resetFields();
         closeModal();
+        closeAddUserModal?.();
+        if(!isNil(defaultObject)){
+            thunkDispatch(removeUser(defaultObject.user_id))
+        }
     };
 
     async function handleSubmit(values: any) {
@@ -45,7 +53,7 @@ const AdminStackholderAddModal = ({ isOpen, closeModal }: AdminStackholderAddMod
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Edit user`}
+                title={`Add admin`}
             />
             <Form
                 name={"add_booking_form"}
@@ -53,19 +61,20 @@ const AdminStackholderAddModal = ({ isOpen, closeModal }: AdminStackholderAddMod
                 onFinish={handleSubmit}
                 form={form}
                 size={"large"}
+                initialValues={defaultObject}
             >
                 <Row gutter={[24, 0]}>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="user_id"
-                            label="User Id"
+                            label="User"
                             rules={[
                                 {
                                     required: true,
                                     message: "This field is required"
                                 },
                             ]}>
-                            <Select placeholder="User">
+                            <Select placeholder="User" disabled={!isNil(defaultObject)}>
                                 {
                                     users.map(
                                         (user: User) => <Option value={user.user_id}>
@@ -75,7 +84,7 @@ const AdminStackholderAddModal = ({ isOpen, closeModal }: AdminStackholderAddMod
                                         </Option>
                                     )
                                 }
-                            </Select>   
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -88,7 +97,9 @@ const AdminStackholderAddModal = ({ isOpen, closeModal }: AdminStackholderAddMod
                                     message: "This field is required"
                                 },
                             ]}>
-                            <Input placeholder="Name" />
+                            <Input disabled={
+                                !isNil(defaultObject)
+                            } placeholder="Name" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -105,7 +116,9 @@ const AdminStackholderAddModal = ({ isOpen, closeModal }: AdminStackholderAddMod
                                     message: "E-mail is invalid"
                                 }
                             ]}>
-                            <Input placeholder="E-mail" />
+                            <Input disabled={
+                                !isNil(defaultObject)
+                            } placeholder="E-mail" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -118,7 +131,9 @@ const AdminStackholderAddModal = ({ isOpen, closeModal }: AdminStackholderAddMod
                                     message: "This field is required"
                                 },
                             ]}>
-                            <Input placeholder="WhatsApp Number" />
+                            <Input disabled={
+                                !isNil(defaultObject)
+                            } placeholder="WhatsApp Number" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -126,7 +141,9 @@ const AdminStackholderAddModal = ({ isOpen, closeModal }: AdminStackholderAddMod
                             name="other_numbers"
                             label="Other Number"
                         >
-                            <Input placeholder="Other Number" />
+                            <Input disabled={
+                                !isNil(defaultObject)
+                            } placeholder="Other Number" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -139,7 +156,7 @@ const AdminStackholderAddModal = ({ isOpen, closeModal }: AdminStackholderAddMod
                                     message: "This field is required"
                                 },
                             ]}
-                            >
+                        >
                             <Select placeholder="Sex">
                                 <Option key="male">Male</Option>
                                 <Option key="female">Female</Option>

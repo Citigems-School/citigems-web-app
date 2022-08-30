@@ -1,5 +1,6 @@
 import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
+import { Student } from "models/Student";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Parent } from "../../../models/Parent";
@@ -18,6 +19,8 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
 
     const { users } = useSelector((state: RootState) => state.users);
     const { loading } = useSelector((state: RootState) => state.admins);
+    const { students } = useSelector((state: RootState) => state.students);
+
     const thunkDispatch = useAppThunkDispatch();
 
     const [form] = useForm();
@@ -38,6 +41,7 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
         handleCancel();
     }
 
+
     return (
         <Modal visible={isOpen} width={700}
             confirmLoading={loading}
@@ -48,7 +52,7 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Edit user`}
+                title={`Edit Parent`}
             />
             <Form
                 name={"edit_parent"}
@@ -62,7 +66,7 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="user_id"
-                            label="User Id"
+                            label="User"
                             rules={[
                                 {
                                     required: true,
@@ -193,28 +197,18 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
                         <Form.Item
                             name="child_name"
                             label="Children names"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}
                         >
-                            <Input placeholder="Children names" />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} lg={12}>
-                        <Form.Item
-                            name="number_of_children"
-                            label="Number of children"
-                            rules={[
+                            <Select placeholder="Child" allowClear showArrow mode="multiple">
                                 {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}
-                        >
-                            <Input type="number" placeholder="Number of children" />
+                                    students.registered.concat(students.unregistered).map(
+                                        (student: Student) => <Option value={student.student_key}>
+                                            {
+                                                student.first_name + " " + student.last_name
+                                            }
+                                        </Option>
+                                    )
+                                }
+                            </Select>
                         </Form.Item>
                     </Col>
                 </Row>

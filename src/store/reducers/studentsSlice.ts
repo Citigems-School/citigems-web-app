@@ -6,7 +6,7 @@ import { ErrorResponse } from '../../models/ErrorResponse';
 import { db } from '../../utils/firebase';
 import { Student, studentDefaultObject } from '../../models/Student';
 
-interface StudentsState {
+export interface StudentsState {
     students: {
         registered: Student[],
         unregistered: Student[]

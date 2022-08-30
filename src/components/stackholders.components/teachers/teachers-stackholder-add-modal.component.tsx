@@ -1,18 +1,24 @@
 import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
+import { isNil } from "lodash";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Teacher } from "../../../models/Teacher";
 import { User } from "../../../models/User";
 import { addTeacher } from "../../../store/reducers/teachersSlice";
+import { removeUser } from "../../../store/reducers/usersSlice";
 import { RootState, useAppThunkDispatch } from "../../../store/store";
 
 
 interface TeacherStackholderAddModalProps {
     isOpen: boolean;
     closeModal: () => void;
+    defaultObject?: Teacher;
+    closeAddUserModal?: () => void;
+
 }
 
-const TeacherStackholderAddModal = ({ isOpen, closeModal }: TeacherStackholderAddModalProps) => {
+const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddUserModal }: TeacherStackholderAddModalProps) => {
 
     const { users } = useSelector((state: RootState) => state.users);
     const { loading } = useSelector((state: RootState) => state.teachers);
@@ -24,8 +30,12 @@ const TeacherStackholderAddModal = ({ isOpen, closeModal }: TeacherStackholderAd
     useEffect(() => form.resetFields(), [isOpen]);
 
     const handleCancel = () => {
-        form.resetFields();
+        if (!isNil(defaultObject)) {
+            thunkDispatch(removeUser(defaultObject.user_id))
+        }
         closeModal();
+        closeAddUserModal?.();
+        form.resetFields();
     };
 
     async function handleSubmit(values: any) {
@@ -43,7 +53,7 @@ const TeacherStackholderAddModal = ({ isOpen, closeModal }: TeacherStackholderAd
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Edit Teacher`}
+                title={`Add Teacher`}
             />
             <Form
                 name={"add_teacher"}
@@ -51,6 +61,7 @@ const TeacherStackholderAddModal = ({ isOpen, closeModal }: TeacherStackholderAd
                 onFinish={handleSubmit}
                 form={form}
                 size={"large"}
+                initialValues={defaultObject}
             >
                 <Row gutter={[24, 0]}>
                     <Col xs={24} lg={12}>
@@ -63,7 +74,7 @@ const TeacherStackholderAddModal = ({ isOpen, closeModal }: TeacherStackholderAd
                                     message: "This field is required"
                                 },
                             ]}>
- <Select placeholder="User">
+                            <Select placeholder="User" disabled={!isNil(defaultObject)}>
                                 {
                                     users.map(
                                         (user: User) => <Option value={user.user_id}>
@@ -73,7 +84,8 @@ const TeacherStackholderAddModal = ({ isOpen, closeModal }: TeacherStackholderAd
                                         </Option>
                                     )
                                 }
-                            </Select>                           </Form.Item>
+                            </Select>
+                        </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
@@ -85,7 +97,7 @@ const TeacherStackholderAddModal = ({ isOpen, closeModal }: TeacherStackholderAd
                                     message: "This field is required"
                                 },
                             ]}>
-                            <Input placeholder="Name" />
+                            <Input disabled={!isNil(defaultObject)} placeholder="Name" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -98,7 +110,7 @@ const TeacherStackholderAddModal = ({ isOpen, closeModal }: TeacherStackholderAd
                                     message: "This field is required"
                                 }
                             ]}>
-                            <Input placeholder="Phone Number" />
+                            <Input disabled={!isNil(defaultObject)} placeholder="Phone Number" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -111,7 +123,7 @@ const TeacherStackholderAddModal = ({ isOpen, closeModal }: TeacherStackholderAd
                                     message: "This field is required"
                                 },
                             ]}>
-                            <Input placeholder="Other Numbers" />
+                            <Input disabled={!isNil(defaultObject)} placeholder="Other Numbers" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>

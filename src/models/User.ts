@@ -1,5 +1,5 @@
 export interface User{
-    child_key: string;
+    child_key: string | string[];
     email: string;
     enrolled: string;
     first_name: string;

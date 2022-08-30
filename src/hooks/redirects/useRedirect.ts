@@ -12,9 +12,11 @@ const useRedirectToDashboard = () => {
 
     useEffect(() => {
         if (isFetched) {
-            if (!isNil(user) && user.role === "admin" && !pathname.includes("auth")) {
-                navigate("/admin/dashboard/")
-            } else if (!pathname.includes("admin")) {
+            if ((isNil(user) || user.role !== "admin") && pathname.includes("admin")) {
+                navigate("/auth/login")
+            } else if ((!isNil(user) && user.role === "admin") && pathname.includes("auth")) {
+                navigate("/admin/dashboard")
+            } else if (pathname === "/") {
                 navigate("/auth/login")
             }
         }

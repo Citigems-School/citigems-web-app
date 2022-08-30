@@ -1,5 +1,6 @@
 import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
+import { Class } from "models/Class";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Teacher } from "../../../models/Teacher";
@@ -18,6 +19,7 @@ const TeacherStackholderEditModal = ({ teacher, isOpen, closeModal }: TeacherSta
 
     const { loading } = useSelector((state: RootState) => state.admins);
     const { users } = useSelector((state: RootState) => state.users);
+    const { classes } = useSelector((state: RootState) => state.classes);
     const thunkDispatch = useAppThunkDispatch();
 
     const [form] = useForm();
@@ -56,7 +58,10 @@ const TeacherStackholderEditModal = ({ teacher, isOpen, closeModal }: TeacherSta
                 onFinish={handleSubmit}
                 form={form}
                 size={"large"}
-                initialValues={teacher}
+                initialValues={{
+                    ...teacher,
+                    classes: teacher && teacher.classes.split(', ').join(',').split(',')
+                }}
             >
                 <Row gutter={[24, 0]}>
                     <Col xs={24} lg={12}>
@@ -79,7 +84,8 @@ const TeacherStackholderEditModal = ({ teacher, isOpen, closeModal }: TeacherSta
                                         </Option>
                                     )
                                 }
-                            </Select>                           </Form.Item>
+                            </Select>
+                        </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
@@ -170,7 +176,17 @@ const TeacherStackholderEditModal = ({ teacher, isOpen, closeModal }: TeacherSta
                                 },
                             ]}
                         >
-                            <Input placeholder="Classes" />
+                            <Select placeholder="Classes" allowClear showArrow mode="multiple">
+                                {
+                                    classes.map(
+                                        (classObj: Class) => <Option value={classObj.class_name}>
+                                            {
+                                                classObj.class_name
+                                            }
+                                        </Option>
+                                    )
+                                }
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>

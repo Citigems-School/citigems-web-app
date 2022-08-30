@@ -1,10 +1,13 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {AsyncThunk, createAsyncThunk, createSlice, Slice} from '@reduxjs/toolkit';
 import { child, equalTo, get, orderByChild, push, query, ref, remove, update } from 'firebase/database';
 import _, { defaults, isNil, omitBy } from 'lodash';
 import { toArray } from 'lodash';
 import { ErrorResponse } from '../../models/ErrorResponse';
 import { db } from '../../utils/firebase';
 import { Parent, parentDefaultObject } from '../../models/Parent';
+import { selectStudents, StudentsState } from './studentsSlice';
+import { RootState } from '../store';
+import { Student } from 'models/Student';
 
 interface ParentsState {
     parents: Parent[],
@@ -15,6 +18,16 @@ interface ParentsState {
 const initialState: ParentsState = {
     parents: [],
     loading: false,
+}
+
+interface StudentState {
+    studentsState: StudentsState
+}
+
+interface Result {
+    code: number;
+    response?: Parent;
+    message?: string;
 }
 
 
@@ -59,16 +72,24 @@ export const removeParent = createAsyncThunk(
 
 export const editParent = createAsyncThunk(
     'Parents/editParent',
-    async (payload: Parent, { rejectWithValue }) => {
+    async (payload: Parent, { rejectWithValue, getState }) => {
         try {
+            payload.number_of_children = payload.child_name.length.toString();
+            let children_names: string[] = [];
+            const { student } = getState() as { student: StudentsState };
+            (payload.child_name as string[]).forEach((childId) => {
+                const childObj = student.students.registered.concat(student.students.unregistered).find(s => s.student_key === childId);
+                children_names.push(childObj?.first_name + " " + childObj?.last_name)
+            })
+            payload.child_name = children_names.join(', ');
             const refDb = ref(db);
             const updates = {}
             //@ts-ignore
-            updates['/stakeholders/parents/' + payload.objectKey] = omitBy(defaults(payload,parentDefaultObject), isNil);
+            updates['/stakeholders/parents/' + payload.objectKey] = omitBy(defaults(payload, parentDefaultObject), isNil);
             update(refDb, updates);
             return {
                 code: 200,
-                response: defaults(payload,parentDefaultObject)
+                response: defaults(payload, parentDefaultObject)
             }
         } catch (e) {
             console.error(e);
@@ -80,11 +101,23 @@ export const editParent = createAsyncThunk(
 
 export const addParent = createAsyncThunk(
     'Parents/addParent',
-    async (payload: Parent, { rejectWithValue }) => {
+    async ({newParent,students}: {
+        newParent:Parent,
+        students:Student[]
+    }, {getState,rejectWithValue}) => {
+
         try {
-            const response = await push(ref(db, '/stakeholders/parents/'), omitBy(defaults(payload,parentDefaultObject), isNil))
+            newParent.number_of_children = newParent.child_name.length.toString();
+            let children_names: string[] = [];
+
+            (newParent.child_name as string[]).forEach((childId) => {
+                const childObj = students.find(s => s.student_key === childId);
+                children_names.push(childObj?.first_name + " " + childObj?.last_name)
+            })
+            newParent.child_name = children_names.join(', ');
+            const response = await push(ref(db, '/stakeholders/parents/'), omitBy(defaults(newParent, parentDefaultObject), isNil))
             const ParentObjectWithId = {
-                ...payload,
+                ...newParent,
                 objectKey: response.key
             }
             return {
@@ -102,13 +135,11 @@ export const addParent = createAsyncThunk(
     }
 )
 
-export const parentsSlice = createSlice({
+export const parentsSlice: Slice<ParentsState, {}, string> = createSlice({
     name: 'Parents',
     initialState: initialState,
     reducers: {},
     extraReducers: {
-
-
 
         [getParents.typePrefix + '/pending']: (state, action) => {
             state.loading = true;
@@ -147,7 +178,7 @@ export const parentsSlice = createSlice({
             state.loading = false;
             if (action.payload.code === 200) {
                 state.parents = state.parents.map((parent) =>
-                parent.objectKey === action.payload.response.objectKey ? action.payload.response : parent
+                    parent.objectKey === action.payload.response.objectKey ? action.payload.response : parent
                 )
             }
         },

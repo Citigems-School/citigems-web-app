@@ -50,7 +50,7 @@ const ClassEditModal = ({ classObject, isOpen, closeModal }: ClassEditModalProps
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Edit classObject`}
+                title={`Edit Class`}
             />
             <Form
                 name={"edit_class"}

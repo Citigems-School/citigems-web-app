@@ -5,6 +5,7 @@ import Table, { ColumnProps } from "antd/lib/table";
 import { isNil } from "lodash";
 import { ForwardRefExoticComponent, useState } from "react";
 import { useSelector } from "react-redux";
+import { selectStudents } from "store/reducers/studentsSlice";
 import { useWindowDimensions } from "../../../hooks/useWindowDimensions";
 import { Parent } from "../../../models/Parent";
 import { removeParent } from "../../../store/reducers/parentsSlice";
@@ -25,6 +26,7 @@ export default function ParentsStackholderTable() {
     const [addParentOpen, setAddParentOpen] = useState<boolean>(false);
     const [editParentOpen, setEditParentOpen] = useState<boolean>(false);
     const [currentParent, setCurrentParent] = useState<Parent>()
+
 
     function _handleEdit(record: Parent) {
         selectParentHandler(record);
@@ -173,7 +175,7 @@ export default function ParentsStackholderTable() {
             width: 2,
             align: "center",
             render: (value) => value,
-            sorter: (a, b) => a.child_name?.localeCompare(b.child_name || "") || 0
+            sorter: (a, b) => (a.child_name as string)?.localeCompare(b.child_name as string || "") || 0
         },
         {
             key: "number_of_children",

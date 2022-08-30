@@ -1,6 +1,6 @@
 export interface Parent {
-    objectKey:string;
-    child_name: string;
+    objectKey: string;
+    child_name: string | string[];
     email: string;
     name: string;
     number_of_children: string;
@@ -13,7 +13,7 @@ export interface Parent {
     whatsapp_number: string;
 }
 
-export const parentDefaultObject : Parent = {
+export const parentDefaultObject: Parent = {
     objectKey: "",
     child_name: "",
     email: "",

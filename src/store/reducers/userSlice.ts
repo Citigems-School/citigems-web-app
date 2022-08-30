@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { child, get, onValue, ref } from 'firebase/database';
 import { ErrorResponse } from '../../models/ErrorResponse';
 import { LoginCredentians } from '../../models/LoginCredentials';
@@ -59,6 +59,23 @@ export const loginAdmin = createAsyncThunk(
     }
   }
 
+)
+
+export const registerUser = createAsyncThunk(
+  'user/RegisterUser',
+  async ({ email, password }: { email: string, password: string }, { rejectWithValue }) => {
+    const auth = getAuth();
+    return createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        return userCredential.user.uid;
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        rejectWithValue({errorCode,errorMessage})
+      });
+
+  }
 )
 
 

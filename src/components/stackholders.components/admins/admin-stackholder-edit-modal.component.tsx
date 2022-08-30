@@ -1,4 +1,4 @@
-import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
+import { Col, Form, Input, Modal, PageHeader, Row, Select } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -64,20 +64,18 @@ const AdminStackholderEditModal = ({ admin, isOpen, closeModal }: AdminStackhold
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="user_id"
-                            label="User Id"
+                            label="User"
                             rules={[
                                 {
                                     required: true,
                                     message: "This field is required"
                                 },
                             ]}>
-                            <Select placeholder="User">
+                            <Select value={form.getFieldValue('user_id')} placeholder="User" allowClear>
                                 {
                                     users.map(
-                                        (user: User) => <Option value={user.user_id}>
-                                            {
-                                                user.first_name + " " + user.last_name
-                                            }
+                                        (user: User) => <Option key={user.user_id} value={user.user_id} selected={admin && user.user_id === admin.user_id}>
+                                            {`${user.first_name} ${user.last_name}`}
                                         </Option>
                                     )
                                 }

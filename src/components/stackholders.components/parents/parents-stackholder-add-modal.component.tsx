@@ -1,21 +1,29 @@
 import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
+import { isNil } from "lodash";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Parent } from "../../../models/Parent";
+import { Student } from "../../../models/Student";
 import { User } from "../../../models/User";
 import { addParent } from "../../../store/reducers/parentsSlice";
+import { removeUser } from "../../../store/reducers/usersSlice";
 import { RootState, useAppThunkDispatch } from "../../../store/store";
 
 
 interface ParentStackholderAddModalProps {
     isOpen: boolean;
     closeModal: () => void;
+    defaultObject?: Parent;
+    closeAddUserModal?: () => void;
+
 }
 
-const ParentStackholderAddModal = ({ isOpen, closeModal }: ParentStackholderAddModalProps) => {
+const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddUserModal }: ParentStackholderAddModalProps) => {
 
     const { loading } = useSelector((state: RootState) => state.parents);
     const { users } = useSelector((state: RootState) => state.users);
+    const { students } = useSelector((state: RootState) => state.students);
 
     const thunkDispatch = useAppThunkDispatch();
 
@@ -27,10 +35,17 @@ const ParentStackholderAddModal = ({ isOpen, closeModal }: ParentStackholderAddM
     const handleCancel = () => {
         form.resetFields();
         closeModal();
+        closeAddUserModal?.();
+        if (!isNil(defaultObject)) {
+            thunkDispatch(removeUser(defaultObject.user_id))
+        }
     };
 
     async function handleSubmit(values: any) {
-        await thunkDispatch(addParent(values));
+        await thunkDispatch(addParent({
+            newParent: values,
+            students: students.registered.concat(students.unregistered)
+        }));
         handleCancel();
     }
 
@@ -52,6 +67,7 @@ const ParentStackholderAddModal = ({ isOpen, closeModal }: ParentStackholderAddM
                 onFinish={handleSubmit}
                 form={form}
                 size={"large"}
+                initialValues={defaultObject}
             >
                 <Row gutter={[24, 0]}>
                     <Col xs={24} lg={12}>
@@ -64,7 +80,7 @@ const ParentStackholderAddModal = ({ isOpen, closeModal }: ParentStackholderAddM
                                     message: "This field is required"
                                 },
                             ]}>
-                             <Select placeholder="User">
+                            <Select placeholder="User" disabled={!isNil(defaultObject)}>
                                 {
                                     users.map(
                                         (user: User) => <Option value={user.user_id}>
@@ -87,7 +103,7 @@ const ParentStackholderAddModal = ({ isOpen, closeModal }: ParentStackholderAddM
                                     message: "This field is required"
                                 },
                             ]}>
-                            <Input placeholder="Name" />
+                            <Input disabled={!isNil(defaultObject)} placeholder="Name" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -104,7 +120,7 @@ const ParentStackholderAddModal = ({ isOpen, closeModal }: ParentStackholderAddM
                                     message: "E-mail is invalid"
                                 }
                             ]}>
-                            <Input placeholder="E-mail" />
+                            <Input disabled={!isNil(defaultObject)} placeholder="E-mail" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -117,7 +133,7 @@ const ParentStackholderAddModal = ({ isOpen, closeModal }: ParentStackholderAddM
                                     message: "This field is required"
                                 },
                             ]}>
-                            <Input placeholder="WhatsApp Number" />
+                            <Input disabled={!isNil(defaultObject)} placeholder="WhatsApp Number" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -138,7 +154,7 @@ const ParentStackholderAddModal = ({ isOpen, closeModal }: ParentStackholderAddM
                             name="other_phone_numbers"
                             label="Other Number"
                         >
-                            <Input placeholder="Other Number" />
+                            <Input disabled={!isNil(defaultObject)} placeholder="Other Number" />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -187,28 +203,18 @@ const ParentStackholderAddModal = ({ isOpen, closeModal }: ParentStackholderAddM
                         <Form.Item
                             name="child_name"
                             label="Children names"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}
                         >
-                            <Input placeholder="Children names" />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} lg={12}>
-                        <Form.Item
-                            name="number_of_children"
-                            label="Number of children"
-                            rules={[
+                            <Select disabled={!isNil(defaultObject)} placeholder="Child" allowClear showArrow mode="multiple">
                                 {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}
-                        >
-                            <Input type="number" placeholder="Number of children" />
+                                    students.registered.concat(students.unregistered).map(
+                                        (student: Student) => <Option value={student.student_key}>
+                                            {
+                                                student.first_name + " " + student.last_name
+                                            }
+                                        </Option>
+                                    )
+                                }
+                            </Select>
                         </Form.Item>
                     </Col>
                 </Row>

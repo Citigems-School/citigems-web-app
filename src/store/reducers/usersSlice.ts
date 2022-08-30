@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { child, equalTo, get, orderByChild, push, query, ref, remove, update } from 'firebase/database';
+import { child, equalTo, get, orderByChild, push, query, ref, remove, set, update } from 'firebase/database';
 import _, { defaults, isNil, omitBy } from 'lodash';
 import { toArray } from 'lodash';
 import { ErrorResponse } from '../../models/ErrorResponse';
@@ -104,11 +104,13 @@ export const removeUser = createAsyncThunk(
 export const editUser = createAsyncThunk(
   'users/editUser',
   async (payload: User, { rejectWithValue }) => {
+    if (!isNil(payload.child_key))
+      payload.child_key = (typeof payload.child_key !== "string") ? payload.child_key.join(', ') : payload.child_key
     try {
       const refDb = ref(db);
       const updates = {}
       //@ts-ignore
-      updates['/app_users/' + payload.user_id] = payload;
+      updates['/app_users/' + payload.user_id] = omitBy(defaults(payload, userDefaultObject), isNil);
       update(refDb, updates);
       return {
         code: 200,
@@ -125,24 +127,13 @@ export const editUser = createAsyncThunk(
 export const addUser = createAsyncThunk(
   'users/addUser',
   async (payload: User, { rejectWithValue }) => {
+    if (!isNil(payload.child_key))
+      payload.child_key = (typeof payload.child_key !== "string") ? payload.child_key.join(', ') : payload.child_key
     try {
-      const response = await push(ref(db, '/app_users/'), omitBy(defaults(payload,userDefaultObject), isNil))
-      const userObjectWithId = {
-        ...defaults(payload,userDefaultObject),
-        user_id: response.key
-      }
-      const refDb = ref(db);
-      const updates = {}
-      //@ts-ignore
-      updates['/app_users/' + response.key] = omitBy(userObjectWithId, isNil);
-      await update(refDb, updates);
+      await set(ref(db, '/app_users/' + payload.user_id), omitBy(defaults(payload, userDefaultObject), isNil))
       return {
-
         code: 200,
-        response: {
-          ...payload,
-          user_id: response.key
-        }
+        response: payload
       }
     } catch (e) {
       console.error(e);
@@ -221,9 +212,7 @@ export const usersSlice = createSlice({
     },
     [addUser.typePrefix + '/fulfilled']: (state, action) => {
       state.loading = false;
-      if (action.payload.code === 200) {
-        state.users.push(action.payload.response)
-      }
+      state.users.unshift(action.payload.response)
     },
     [addUser.typePrefix + '/rejected']: (state, action) => {
       state.loading = false;
