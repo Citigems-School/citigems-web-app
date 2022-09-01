@@ -135,6 +135,23 @@ export const addUser = createAsyncThunk(
     if (!isNil(payload.child_key))
       payload.child_key = (typeof payload.child_key !== "string") ? payload.child_key.join(', ') : payload.child_key
     try {
+      switch (payload.role) {
+        case "admin": {
+          payload.parent_key = "";
+          payload.child_key = "";
+          break;
+        };
+        case "teacher": {
+          payload.parent_key = "";
+          payload.child_key = "";
+          break;
+        }
+        default: {
+          payload.parent_key = "";
+          payload.child_key = "";
+          break;
+        }
+      }
       await set(ref(db, '/app_users/' + payload.user_id), omitBy(defaults(payload, userDefaultObject), isNil))
       return {
         code: 200,

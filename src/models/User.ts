@@ -12,6 +12,7 @@ export interface User{
     selected_role: string;
     user_id: string;
     whatsapp_number: string;
+    password?:string;
 }
 
 export const userDefaultObject : User = {

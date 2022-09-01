@@ -1,6 +1,6 @@
 export function generatePassword() {
     const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const passwordLength = 6;
+    const passwordLength = 8;
     var password = "";
 
     for (var i = 0; i <= passwordLength; i++) {

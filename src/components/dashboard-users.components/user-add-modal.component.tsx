@@ -15,7 +15,6 @@ import { RootState, useAppThunkDispatch } from "../../store/store";
 import AdminStackholderAddModal from "../stackholders.components/admins/admin-stackholder-add-modal.component";
 import ParentStackholderAddModal from "../stackholders.components/parents/parents-stackholder-add-modal.component";
 import TeacherStackholderAddModal from "../stackholders.components/teachers/teachers-stackholder-add-modal.component";
-import { unwrapResult } from '@reduxjs/toolkit';
 
 interface UserAddModalProps {
     isOpen: boolean;
@@ -39,7 +38,7 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
     }
 
     const thunkDispatch = useAppThunkDispatch();
-    const dispatch= useDispatch();
+    const dispatch = useDispatch();
 
     const [form] = useForm();
     const { Option } = Select;
@@ -63,81 +62,93 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
             console.log(response.payload as { payload: string })
             const userData: User = { ...values, user_id: response.payload as string };
             const result = await thunkDispatch(addUser(userData));
-            if (
-                (
-                    !isNil(userData.parent_key) &&
-                    userData.parent_key !== "" &&
-                    userData.role === "parent"
-                )) {
-                handleCancel();
-            } else {
-                switch (userData.role) {
-                    case "admin": {
-                        const newAdmin: Admin = {
-                            objectKey: "",
-                            email: userData.email,
-                            name: userData.first_name + " " + userData.last_name,
-                            other_numbers: userData.other_numbers,
-                            responsibilities: "",
-                            sex: "",
-                            user_id: (result.payload as any).response.user_id,
-                            whatsapp_number: userData.whatsapp_number
-                        };
-                        setCreatedNewObject(newAdmin);
-                        break;
-                    };
-                    case "parent": {
-                        let children: Student[] = [];
-                        const listStudents = students.registered.concat(students.unregistered);
-                        if (!isNil(userData.child_key) && userData.child_key !== "")
-                            (userData.child_key as string[]).forEach(child => {
-                                children.push(listStudents.find((s: Student) => s.student_key === child)!);
-                            });
-                        const newParent: Parent = {
-                            objectKey: "",
-                            child_name: children.map(child => child.first_name + " " + child.last_name).join(', ') || "",
-                            email: userData.email,
-                            name: userData.first_name + " " + userData.last_name,
-                            number_of_children: children.length.toString(),
-                            other_phone_numbers: userData.other_numbers,
-                            place_of_work: "",
-                            profession: "",
-                            relationship: "",
-                            telegram_number: "",
-                            user_id: (result.payload as any).response.user_id,
-                            whatsapp_number: userData.whatsapp_number
-                        };
-                        setCreatedNewObject(newParent);
-                        break;
-                    };
-                    case "teacher": {
+            Modal.info({
+                title: 'Generated user password',
+                content: (
+                    <div>
+                        <code>{password}</code>
+                        <p>Save the password in safe place</p>
+                    </div>
+                ),
+                onOk() {
+                    if (
+                        (
+                            !isNil(userData.parent_key) &&
+                            userData.parent_key !== "" &&
+                            userData.role === "parent"
+                        )) {
+                        handleCancel();
 
-                        const newTeacher: Teacher = {
-                            objectKey: "",
-                            classes: "",
-                            marital_status: "",
-                            name: userData.first_name + " " + userData.last_name,
-                            nationality: "",
-                            other_numbers: userData.other_numbers,
-                            phone_number: userData.whatsapp_number,
-                            salary: "",
-                            sex: "",
-                            user_id: (result.payload as any).response.user_id,
+                    } else {
+                        switch (userData.role) {
+                            case "admin": {
+                                const newAdmin: Admin = {
+                                    objectKey: "",
+                                    email: userData.email,
+                                    name: userData.first_name + " " + userData.last_name,
+                                    other_numbers: userData.other_numbers,
+                                    responsibilities: "",
+                                    sex: "",
+                                    user_id: (result.payload as any).response.user_id,
+                                    whatsapp_number: userData.whatsapp_number
+                                };
+                                setCreatedNewObject(newAdmin);
+                                break;
+                            };
+                            case "parent": {
+                                let children: Student[] = [];
+                                const listStudents = students.registered.concat(students.unregistered);
+                                if (!isNil(userData.child_key) && userData.child_key !== "")
+                                    (userData.child_key as string[]).forEach(child => {
+                                        children.push(listStudents.find((s: Student) => s.student_key === child)!);
+                                    });
+                                const newParent: Parent = {
+                                    objectKey: "",
+                                    child_name: children.map(child => child.first_name + " " + child.last_name).join(', ') || "",
+                                    email: userData.email,
+                                    name: userData.first_name + " " + userData.last_name,
+                                    number_of_children: children.length.toString(),
+                                    other_phone_numbers: userData.other_numbers,
+                                    place_of_work: "",
+                                    profession: "",
+                                    relationship: "",
+                                    telegram_number: "",
+                                    user_id: (result.payload as any).response.user_id,
+                                    whatsapp_number: userData.whatsapp_number
+                                };
+                                setCreatedNewObject(newParent);
+                                break;
+                            };
+                            case "teacher": {
+
+                                const newTeacher: Teacher = {
+                                    objectKey: "",
+                                    classes: "",
+                                    marital_status: "",
+                                    name: userData.first_name + " " + userData.last_name,
+                                    nationality: "",
+                                    other_numbers: userData.other_numbers,
+                                    phone_number: userData.whatsapp_number,
+                                    salary: "",
+                                    sex: "",
+                                    user_id: (result.payload as any).response.user_id,
+                                }
+                                setCreatedNewObject(newTeacher);
+                                break;
+                            }
+                            default: {
+                                setCreatedNewObject(undefined);
+                                break;
+                            }
                         }
-                        setCreatedNewObject(newTeacher);
-                        break;
+                        dispatch(signupInit());
+                        setSelectedRole(userData.role);
+                        setOpenSecondModal(true);
+                        form.resetFields();
                     }
-                    default: {
-                        setCreatedNewObject(undefined);
-                        break;
-                    }
-                }
-                dispatch(signupInit());
-                setSelectedRole(userData.role);
-                setOpenSecondModal(true);
-                form.resetFields();
+                },
+            });
 
-            }
         })
     }
 
@@ -322,9 +333,9 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                     </Row>
                 </Form>
             </Modal>
-            <AdminStackholderAddModal defaultObject={createdNewObject as Admin} isOpen={selectedRole === "admin" && openSecondModal!} closeModal={closeSecondModal} />
-            <ParentStackholderAddModal defaultObject={createdNewObject as Parent} isOpen={selectedRole === "parent" && openSecondModal!} closeModal={closeSecondModal} />
-            <TeacherStackholderAddModal defaultObject={createdNewObject as Teacher} isOpen={selectedRole === "teacher" && openSecondModal!} closeModal={closeSecondModal} />
+            <AdminStackholderAddModal defaultObject={createdNewObject as Admin} isOpen={selectedRole === "admin" && openSecondModal!} closeModal={closeSecondModal} closeAddUserModal={closeModal} />
+            <ParentStackholderAddModal defaultObject={createdNewObject as Parent} isOpen={selectedRole === "parent" && openSecondModal!} closeModal={closeSecondModal} closeAddUserModal={closeModal} />
+            <TeacherStackholderAddModal defaultObject={createdNewObject as Teacher} isOpen={selectedRole === "teacher" && openSecondModal!} closeModal={closeSecondModal} closeAddUserModal={closeModal} />
 
         </>
     );
