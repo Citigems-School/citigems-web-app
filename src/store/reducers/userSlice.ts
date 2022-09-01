@@ -72,7 +72,7 @@ export const registerUser = createAsyncThunk(
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        rejectWithValue({errorCode,errorMessage})
+        rejectWithValue({ errorCode, errorMessage })
       });
 
   }
@@ -84,6 +84,10 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: initialState,
   reducers: {
+    signupInit: (state) => {
+      state.loading = false;
+      state.error = undefined;
+    },
     logout: (state) => {
       state.user = undefined;
       state.loading = false;
@@ -131,7 +135,15 @@ export const userSlice = createSlice({
       state.user = undefined;
       state.loading = false;
       state.error = action.payload as ErrorResponse;
+    },
+
+    [registerUser.typePrefix + '/pending']: (state, action) => {
+      state.loading = true;
+    },
+    [registerUser.typePrefix + '/rejected']: (state, action) => {
+      state.error = action.payload
     }
+
   },
 });
 
@@ -141,6 +153,6 @@ export const selectUser = (state: UserState) => state?.user;
 export const loadingUser = (state: UserState) => state.loading;
 export const errorUSer = (state: UserState) => state.error;
 // actions
-export const { logout } = userSlice.actions
+export const { logout,signupInit } = userSlice.actions
 
 export default userSlice.reducer;

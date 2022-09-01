@@ -2,8 +2,8 @@ import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { isNil } from "lodash";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { registerUser } from "store/reducers/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, signupInit } from "store/reducers/userSlice";
 import { generatePassword } from "utils/functions";
 import { Admin } from "../../models/Admin";
 import { Parent } from "../../models/Parent";
@@ -24,6 +24,7 @@ interface UserAddModalProps {
 
 const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
 
+    const user = useSelector((state: RootState) => state.user);
     const { loading } = useSelector((state: RootState) => state.users);
     const { parents } = useSelector((state: RootState) => state.parents);
     const { students } = useSelector((state: RootState) => state.students);
@@ -38,11 +39,15 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
     }
 
     const thunkDispatch = useAppThunkDispatch();
+    const dispatch= useDispatch();
 
     const [form] = useForm();
     const { Option } = Select;
 
-    useEffect(() => form.resetFields(), [isOpen]);
+    useEffect(() => {
+        form.resetFields();
+        dispatch(signupInit());
+    }, [isOpen]);
 
     const handleCancel = () => {
         form.resetFields();
@@ -127,8 +132,11 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                         break;
                     }
                 }
+                dispatch(signupInit());
                 setSelectedRole(userData.role);
                 setOpenSecondModal(true);
+                form.resetFields();
+
             }
         })
     }
@@ -136,7 +144,7 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
     return (
         <>
             <Modal visible={isOpen && !openSecondModal} width={700}
-                confirmLoading={loading}
+                confirmLoading={loading || user.loading}
                 onOk={async () => {
                     form.submit();
                 }}

@@ -1,7 +1,7 @@
 import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { isNil } from "lodash";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Admin } from "../../../models/Admin";
 import { User } from "../../../models/User";
@@ -14,32 +14,37 @@ interface AdminStackholderAddModalProps {
     isOpen: boolean;
     closeModal: () => void;
     defaultObject?: Admin;
-    closeAddUserModal? : () => void;
+    closeAddUserModal?: () => void;
 
 }
 
-const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal,closeAddUserModal }: AdminStackholderAddModalProps) => {
+const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddUserModal }: AdminStackholderAddModalProps) => {
 
     const { users } = useSelector((state: RootState) => state.users);
     const { loading } = useSelector((state: RootState) => state.admins);
+    const [isDone, setIsDone] = useState(false)
     const thunkDispatch = useAppThunkDispatch();
 
     const [form] = useForm();
     const { Option } = Select;
 
-    useEffect(() => form.resetFields(), [isOpen]);
+    useEffect(() => {
+        setIsDone(false);
+        form.resetFields();
+    }, [isOpen]);
 
     const handleCancel = () => {
+        if (!isNil(defaultObject) && isDone) {
+            thunkDispatch(removeUser(defaultObject.user_id))
+        }
         form.resetFields();
         closeModal();
         closeAddUserModal?.();
-        if(!isNil(defaultObject)){
-            thunkDispatch(removeUser(defaultObject.user_id))
-        }
     };
 
     async function handleSubmit(values: any) {
         await thunkDispatch(addAdmin(values));
+        setIsDone(isDone);
         handleCancel();
     }
 

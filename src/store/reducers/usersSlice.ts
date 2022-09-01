@@ -85,18 +85,23 @@ export const getUsers = createAsyncThunk(
 export const removeUser = createAsyncThunk(
   "users/removeUser",
   async (payload: string, { rejectWithValue }) => {
-    try {
-      const userRef = ref(db, "/app_users/" + payload);
-      remove(userRef);
-      return {
-        code: 200,
-        response: payload
-      }
-    } catch (e) {
-      console.error(e);
-      return rejectWithValue({ code: 500, message: 'Error in removing user' })
+    if (payload !== "" || isNil(payload)) {
+      try {
+        const userRef = ref(db, "/app_users/" + payload);
+        remove(userRef);
+        return {
+          code: 200,
+          response: payload
+        }
+      } catch (e) {
+        console.error(e);
+        return rejectWithValue({ code: 500, message: 'Error in removing user' })
 
+      }
+    } else {
+      return rejectWithValue({ code: 500, message: 'Error in removing user ( empty id )' })
     }
+
 
   }
 )

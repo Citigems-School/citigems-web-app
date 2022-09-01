@@ -33,12 +33,12 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
     useEffect(() => form.resetFields(), [isOpen]);
 
     const handleCancel = () => {
-        form.resetFields();
-        closeModal();
-        closeAddUserModal?.();
         if (!isNil(defaultObject)) {
             thunkDispatch(removeUser(defaultObject.user_id))
         }
+        form.resetFields();
+        closeModal();
+        closeAddUserModal?.();
     };
 
     async function handleSubmit(values: any) {
