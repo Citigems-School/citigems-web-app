@@ -1,6 +1,6 @@
 import Icon, { CloseCircleOutlined } from "@ant-design/icons";
-import { Dismiss16Regular, Person16Regular } from "@ricons/fluent";
-import { Button, Checkbox, Layout, message, Modal, PageHeader, Space, Switch, Tooltip, Typography } from "antd";
+import { Dismiss16Regular, Person16Regular, Save16Regular } from "@ricons/fluent";
+import { Button, Checkbox, Layout, message, Modal, PageHeader, Space, Tooltip, Typography } from "antd";
 import { CheckboxChangeEvent } from "antd/lib/checkbox/Checkbox";
 import Table, { ColumnProps } from "antd/lib/table";
 import { isNil } from "lodash";
@@ -8,7 +8,7 @@ import { ForwardRefExoticComponent, useState } from "react";
 import { useSelector } from "react-redux";
 import { useWindowDimensions } from "../../../hooks/useWindowDimensions";
 import { Student } from "../../../models/Student";
-import { removeStudent } from "../../../store/reducers/studentsSlice";
+import { addStudent, removeStudent } from "../../../store/reducers/studentsSlice";
 import { RootState, useAppThunkDispatch } from "../../../store/store";
 import StudentAddModal from "./students-stackholder-add-modal.component";
 import StudentEditModal from "./students-stackholder-edit-modal.component";
@@ -54,6 +54,37 @@ export default function StudentsStackholderTable() {
     const closeAddStudentModal = () => {
         setAddStudentOpen(false);
     }
+    const openRegisterUnregisteredStudentModal = (student: Student) => {
+        confirm({
+            title: 'Are you sure you want register this student?',
+            okText: 'Yes',
+            cancelText: 'No',
+            async onOk() {
+                try {
+
+                    if (!isNil(student)) {
+                        await thunkDispatch(removeStudent({
+                            studentId: student.student_key,
+                            type: (isRegistered) ? "registered" : "unregistered"
+                        }))
+                        await thunkDispatch(addStudent(
+                            {
+                                type: "registered",
+                                student
+                            }
+                        ))
+                        setCurrentStudent(undefined);
+                    } else {
+                        throw new Error("selected Student is null");
+                    }
+
+                } catch (e) {
+                    message.error("Can't remove Student, please try again")
+                    setCurrentStudent(undefined);
+                }
+            }
+        })
+    }
     const openDeleteStudentModal = (student: Student) => {
         confirm({
             title: 'Are you sure delete this Student?',
@@ -78,10 +109,7 @@ export default function StudentsStackholderTable() {
                     message.error("Can't remove Student, please try again")
                     setCurrentStudent(undefined);
                 }
-            },
-            onCancel() {
-                console.log('Cancel');
-            },
+            }
         });
     }
 
@@ -242,6 +270,23 @@ export default function StudentsStackholderTable() {
             render: (value, record) => (
                 <>
                     <Space>
+                        {
+                            !isRegistered && <Tooltip title={"Register Student"}>
+                                <Button
+                                    key={"registerStudent"}
+                                    size={"small"}
+                                    icon={
+                                        <Icon
+                                            className={"i20"}
+                                            component={Save16Regular as ForwardRefExoticComponent<any>}
+                                        />
+                                    }
+                                    type={"text"}
+                                    onClick={() => openRegisterUnregisteredStudentModal(record)}
+                                />
+                            </Tooltip>
+                        }
+
                         <Tooltip title={"Edit Student"}>
                             <Button
                                 key={"editStudent"}
