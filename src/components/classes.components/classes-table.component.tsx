@@ -24,7 +24,7 @@ export default function ClassesTable() {
     const { loading, classes } = useSelector((state: RootState) => state.classes);
 
     const [pageSize,
-        setPageSize] = useState(5)
+        setPageSize] = useState(20)
 
     const [addUserOpen, setAddUserOpen] = useState<boolean>(false);
     const [editUserOpen, setEditUserOpen] = useState<boolean>(false);
@@ -36,7 +36,7 @@ export default function ClassesTable() {
             let listStudents: string[] = [];
             listIds.forEach(
                 id => {
-                    const filteredStudent = students.registered.concat(students.unregistered).find(
+                    const filteredStudent = students.registered.find(
                         student => student.student_key === id
                     )
                     if (!isNil(filteredStudent))
