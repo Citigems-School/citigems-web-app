@@ -301,7 +301,6 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                                 name="selected_role"
                                 label="Selected Role">
                                 <Select placeholder="Selected Role" allowClear>
-                                    <Option key="admin">admin</Option>
                                     <Option key="Administrator">Administrator</Option>
                                     <Option key="parent">Parent</Option>
                                     <Option key="teacher">Teacher</Option>

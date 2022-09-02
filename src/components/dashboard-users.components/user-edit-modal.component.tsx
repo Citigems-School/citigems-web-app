@@ -190,7 +190,6 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
                             name="selected_role"
                             label="Selected Role">
                             <Select placeholder="Selected Role">
-                                <Option key="admin">admin</Option>
                                 <Option key="Administrator">Administrator</Option>
                                 <Option key="parent">Parent</Option>
                                 <Option key="teacher">Teacher</Option>
