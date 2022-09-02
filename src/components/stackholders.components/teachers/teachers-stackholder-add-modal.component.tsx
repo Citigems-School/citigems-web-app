@@ -71,12 +71,12 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                         <Form.Item
                             name="user_id"
                             label="User Id"
-                            rules={[
+                            rules={!defaultObject ? [
                                 {
                                     required: true,
                                     message: "This field is required"
                                 },
-                            ]}>
+                            ] : undefined}>
                             <Select placeholder="User" disabled={!isNil(defaultObject)}>
                                 {
                                     users.map(
@@ -107,12 +107,12 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                         <Form.Item
                             name="phone_number"
                             label="Phone Number"
-                            rules={[
+                            rules={!defaultObject ? [
                                 {
                                     required: true,
                                     message: "This field is required"
-                                }
-                            ]}>
+                                },
+                            ] : undefined}>
                             <Input disabled={!isNil(defaultObject)} placeholder="Phone Number" />
                         </Form.Item>
                     </Col>
@@ -120,12 +120,7 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                         <Form.Item
                             name="other_numbers"
                             label="Other Numbers"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}>
+                            >
                             <Input disabled={!isNil(defaultObject)} placeholder="Other Numbers" />
                         </Form.Item>
                     </Col>

@@ -117,12 +117,7 @@ const TeacherStackholderEditModal = ({ teacher, isOpen, closeModal }: TeacherSta
                         <Form.Item
                             name="other_numbers"
                             label="Other Numbers"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}>
+                        >
                             <Input placeholder="Other Numbers" />
                         </Form.Item>
                     </Col>
