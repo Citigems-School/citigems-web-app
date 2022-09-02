@@ -73,13 +73,13 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="user_id"
-                            label="User Id"
-                            rules={[
+                            label="User"
+                            rules={!defaultObject ? [
                                 {
                                     required: true,
                                     message: "This field is required"
                                 },
-                            ]}>
+                            ] : undefined}>
                             <Select placeholder="User" disabled={!isNil(defaultObject)}>
                                 {
                                     users.map(
@@ -110,7 +110,9 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                         <Form.Item
                             name="email"
                             label="E-mail"
-                            rules={[
+                            rules={!defaultObject ? [
+
+
                                 {
                                     required: true,
                                     message: "This field is required"
@@ -119,7 +121,7 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                                     pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
                                     message: "E-mail is invalid"
                                 }
-                            ]}>
+                            ] : undefined}>
                             <Input disabled={!isNil(defaultObject)} placeholder="E-mail" />
                         </Form.Item>
                     </Col>
@@ -127,12 +129,12 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                         <Form.Item
                             name="whatsapp_number"
                             label="WhatsApp Number"
-                            rules={[
+                            rules={!defaultObject ? [
                                 {
                                     required: true,
                                     message: "This field is required"
                                 },
-                            ]}>
+                            ] : undefined}>
                             <Input disabled={!isNil(defaultObject)} placeholder="WhatsApp Number" />
                         </Form.Item>
                     </Col>
@@ -140,12 +142,7 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                         <Form.Item
                             name="telegram_number"
                             label="Telegram Number"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}>
+                        >
                             <Input placeholder="Telegram Number" />
                         </Form.Item>
                     </Col>
@@ -196,13 +193,30 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                                 },
                             ]}
                         >
-                            <Input placeholder="Relationship" />
+                            <Select placeholder="Relationship">
+                                <Option>
+                                    Single
+                                </Option>
+                                <Option>
+                                    Married
+                                </Option>
+                                <Option>
+                                    Separated
+                                </Option>
+                                <Option>
+                                    Divorced
+                                </Option>
+                                <Option>
+                                    Widowed
+                                </Option>
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="child_name"
                             label="Children names"
+
                         >
                             <Select disabled={!isNil(defaultObject)} placeholder="Child" allowClear showArrow mode="multiple">
                                 {

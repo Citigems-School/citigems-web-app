@@ -1,6 +1,7 @@
-import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
+import { Col, Form, Input, Modal, PageHeader, Row, Select } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { isNil } from "lodash";
+import { Class } from "models/Class";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Teacher } from "../../../models/Teacher";
@@ -22,6 +23,8 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
 
     const { users } = useSelector((state: RootState) => state.users);
     const { loading } = useSelector((state: RootState) => state.teachers);
+    const { classes } = useSelector((state: RootState) => state.classes);
+
     const thunkDispatch = useAppThunkDispatch();
 
     const [form] = useForm();
@@ -162,7 +165,24 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                                 },
                             ]}
                         >
-                            <Input placeholder="Marital Status" />
+                        <Select placeholder="Marital Status">
+                                <Option value="single">
+                                    Single
+                                </Option>
+                                <Option value="married">
+                                    Married
+                                </Option>
+                                <Option value="separated">
+                                    Separated
+                                </Option>
+                                <Option value="divorced">
+                                    Divorced
+                                </Option>
+                                <Option value="widowed">
+                                    Widowed
+                                </Option>
+                            </Select>
+    
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -176,7 +196,17 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                                 },
                             ]}
                         >
-                            <Input placeholder="Classes" />
+                            <Select placeholder="Classes" allowClear showArrow mode="multiple">
+                                {
+                                    classes.map(
+                                        (classObj: Class) => <Option value={classObj.class_name}>
+                                            {
+                                                classObj.class_name
+                                            }
+                                        </Option>
+                                    )
+                                }
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>

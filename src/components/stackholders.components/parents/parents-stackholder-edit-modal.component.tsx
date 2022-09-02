@@ -133,12 +133,7 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
                         <Form.Item
                             name="telegram_number"
                             label="Telegram Number"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}>
+                        >
                             <Input placeholder="Telegram Number" />
                         </Form.Item>
                     </Col>

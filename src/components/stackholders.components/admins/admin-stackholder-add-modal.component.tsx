@@ -172,12 +172,6 @@ const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddU
                         <Form.Item
                             name="responsibilities"
                             label="Responsibilities"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}
                         >
                             <Input placeholder="Responsibilities" />
                         </Form.Item>

@@ -162,7 +162,23 @@ const TeacherStackholderEditModal = ({ teacher, isOpen, closeModal }: TeacherSta
                                 },
                             ]}
                         >
-                            <Input placeholder="Marital Status" />
+                            <Select placeholder="Marital Status">
+                                <Option value="single">
+                                    Single
+                                </Option>
+                                <Option value="married">
+                                    Married
+                                </Option>
+                                <Option value="separated">
+                                    Separated
+                                </Option>
+                                <Option value="divorced">
+                                    Divorced
+                                </Option>
+                                <Option value="widowed">
+                                    Widowed
+                                </Option>
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
