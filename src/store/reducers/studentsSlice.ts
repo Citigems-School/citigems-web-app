@@ -37,21 +37,26 @@ export const getStudents = createAsyncThunk(
             regStudents.forEach((student, index) => {
                 student.student_key = regkeys[index];
             })
+            let unRegStudents
+            if (snapshotUnRegistered.val()) {
+                const unRegkeys = Object.keys(snapshotUnRegistered.val());
+                unRegStudents = toArray<Student>(snapshotUnRegistered.val());
+                unRegStudents.forEach((student, index) => {
+                    student.student_key = unRegkeys[index];
+                })
+            }
 
-            const unRegkeys = Object.keys(snapshotUnRegistered.val());
-            const unRegStudents = toArray<Student>(snapshotUnRegistered.val());
-            unRegStudents.forEach((student, index) => {
-                student.student_key = unRegkeys[index];
-            })
+
 
             return {
                 code: 200,
                 response: {
                     registered: regStudents,
-                    unregistered: unRegStudents
+                    unregistered: unRegStudents || []
                 }
             };
         } catch (e) {
+            console.error(e);
             return rejectWithValue({ code: 500, message: 'Error in fetching data' })
         }
     }
@@ -85,7 +90,7 @@ export const editStudent = createAsyncThunk(
             const refDb = ref(db);
             const updates = {}
             //@ts-ignore
-            updates[`/stakeholders/students/${payload.type}/` + payload.student.student_key] = omitBy(defaults(payload.student,studentDefaultObject), isNil);
+            updates[`/stakeholders/students/${payload.type}/` + payload.student.student_key] = omitBy(defaults(payload.student, studentDefaultObject), isNil);
             await update(refDb, updates);
             return {
                 code: 200,
@@ -105,7 +110,7 @@ export const addStudent = createAsyncThunk(
     async (payload: { type: string, student: Student }, { rejectWithValue }) => {
         try {
             const dbUrl = '/stakeholders/students/' + payload.type + "/";
-            const response = await push(ref(db, dbUrl), omitBy(defaults(payload.student,studentDefaultObject), isNil))
+            const response = await push(ref(db, dbUrl), omitBy(defaults(payload.student, studentDefaultObject), isNil))
             const studentObjectWithId = {
                 ...defaults(payload.student),
                 student_key: response.key
