@@ -1,4 +1,4 @@
-import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
+import { Col, Form, Input, message, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { isNil } from "lodash";
 import { useEffect, useState } from "react";
@@ -59,98 +59,122 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
             email: values.email,
             password
         })).then(async response => {
-            console.log(response.payload as { payload: string })
-            const userData: User = { ...values, user_id: response.payload as string };
-            const result = await thunkDispatch(addUser(userData));
-            Modal.info({
-                title: 'Generated user password',
-                content: (
-                    <div>
-                        <code>{password}</code>
-                        <p>Save the password in safe place</p>
-                    </div>
-                ),
-                onOk() {
-                    if (
-                        (
-                            !isNil(userData.parent_key) &&
-                            userData.parent_key !== "" &&
-                            userData.role === "parent"
-                        )) {
-                        handleCancel();
-
-                    } else {
-                        switch (userData.role) {
-                            case "admin": {
-                                const newAdmin: Admin = {
-                                    objectKey: "",
-                                    email: userData.email,
-                                    name: userData.first_name + " " + userData.last_name,
-                                    other_numbers: userData.other_numbers,
-                                    responsibilities: "",
-                                    sex: "",
-                                    user_id: (result.payload as any).response.user_id,
-                                    whatsapp_number: userData.whatsapp_number
-                                };
-                                setCreatedNewObject(newAdmin);
-                                break;
-                            };
-                            case "parent": {
-                                let children: Student[] = [];
-                                const listStudents = students.registered.concat(students.unregistered);
-                                if (!isNil(userData.child_key) && userData.child_key !== "")
-                                    (userData.child_key as string[]).forEach(child => {
-                                        children.push(listStudents.find((s: Student) => s.student_key === child)!);
-                                    });
-                                const newParent: Parent = {
-                                    objectKey: "",
-                                    child_name: children.map(child => child.first_name + " " + child.last_name).join(', ') || "",
-                                    email: userData.email,
-                                    name: userData.first_name + " " + userData.last_name,
-                                    number_of_children: children.length.toString(),
-                                    other_phone_numbers: userData.other_numbers,
-                                    place_of_work: "",
-                                    profession: "",
-                                    relationship: "",
-                                    telegram_number: "",
-                                    user_id: (result.payload as any).response.user_id,
-                                    whatsapp_number: userData.whatsapp_number
-                                };
-                                setCreatedNewObject(newParent);
-                                break;
-                            };
-                            case "teacher": {
-
-                                const newTeacher: Teacher = {
-                                    objectKey: "",
-                                    classes: "",
-                                    marital_status: "",
-                                    name: userData.first_name + " " + userData.last_name,
-                                    nationality: "",
-                                    other_numbers: userData.other_numbers,
-                                    phone_number: userData.whatsapp_number,
-                                    salary: "",
-                                    sex: "",
-                                    user_id: (result.payload as any).response.user_id,
-                                }
-                                setCreatedNewObject(newTeacher);
-                                break;
-                            }
-                            default: {
-                                setCreatedNewObject(undefined);
-                                break;
-                            }
-                        }
-                        dispatch(signupInit());
-                        setSelectedRole(userData.role);
-                        setOpenSecondModal(true);
-                        form.resetFields();
+            const payload: any = response.payload
+            if (payload && payload.code) {
+                switch (payload.code) {
+                    case "auth/email-already-in-use": {
+                        message.error("Already exists an account with the given email address.")
+                        break;
                     }
-                },
-            });
+                    case "auth/invalid-email": {
+                        message.error("The email address is not valid")
+                        break;
+                    }
+                    case "auth/operation-not-allowed": {
+                        message.error("Email/Password accounts are not enabled. Enable email/password accounts in the Firebase Console, under the Auth tab.")
+                        break;
+                    }
+                    case "auth/weak-password": {
+                        message.error("The password is not strong enough.")
+                        break;
+                    }
+                }
+            } else {
+                const userData: User = { ...values, user_id: response.payload as string };
+                const result = await thunkDispatch(addUser(userData));
+                Modal.info({
+                    title: 'Generated user password',
+                    content: (
+                        <div>
+                            <code>{password}</code>
+                            <p>Save the password in safe place</p>
+                        </div>
+                    ),
+                    onOk() {
+                        if (
+                            (
+                                !isNil(userData.parent_key) &&
+                                userData.parent_key !== "" &&
+                                userData.role === "parent"
+                            )) {
+                            handleCancel();
 
+                        } else {
+                            switch (userData.role) {
+                                case "admin": {
+                                    const newAdmin: Admin = {
+                                        objectKey: "",
+                                        email: userData.email,
+                                        name: userData.first_name + " " + userData.last_name,
+                                        other_numbers: userData.other_numbers,
+                                        responsibilities: "",
+                                        sex: "",
+                                        user_id: (result.payload as any).response.user_id,
+                                        whatsapp_number: userData.whatsapp_number
+                                    };
+                                    setCreatedNewObject(newAdmin);
+                                    break;
+                                };
+                                case "parent": {
+                                    let children: Student[] = [];
+                                    const listStudents = students.registered.concat(students.unregistered);
+                                    if (!isNil(userData.child_key) && userData.child_key !== "")
+                                        (userData.child_key as string[]).forEach(child => {
+                                            children.push(listStudents.find((s: Student) => s.student_key === child)!);
+                                        });
+                                    const newParent: Parent = {
+                                        objectKey: "",
+                                        child_name: children.map(child => child.first_name + " " + child.last_name).join(', ') || "",
+                                        email: userData.email,
+                                        name: userData.first_name + " " + userData.last_name,
+                                        number_of_children: children.length.toString(),
+                                        other_phone_numbers: userData.other_numbers,
+                                        place_of_work: "",
+                                        profession: "",
+                                        relationship: "",
+                                        telegram_number: "",
+                                        user_id: (result.payload as any).response.user_id,
+                                        whatsapp_number: userData.whatsapp_number
+                                    };
+                                    setCreatedNewObject(newParent);
+                                    break;
+                                };
+                                case "teacher": {
+
+                                    const newTeacher: Teacher = {
+                                        objectKey: "",
+                                        classes: "",
+                                        marital_status: "",
+                                        name: userData.first_name + " " + userData.last_name,
+                                        nationality: "",
+                                        other_numbers: userData.other_numbers,
+                                        phone_number: userData.whatsapp_number,
+                                        salary: "",
+                                        sex: "",
+                                        user_id: (result.payload as any).response.user_id,
+                                    }
+                                    setCreatedNewObject(newTeacher);
+                                    break;
+                                }
+                                default: {
+                                    setCreatedNewObject(undefined);
+                                    break;
+                                }
+                            }
+                            dispatch(signupInit());
+                            setSelectedRole(userData.role);
+                            setOpenSecondModal(true);
+                            form.resetFields();
+                        }
+                    },
+                });
+            }
+
+        }).catch((error) => {
+            console.error(error);
         })
     }
+
 
     return (
         <>

@@ -65,16 +65,17 @@ export const registerUser = createAsyncThunk(
   'user/RegisterUser',
   async ({ email, password }: { email: string, password: string }, { rejectWithValue }) => {
     const auth = getAuth();
-    return createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        return userCredential.user.uid;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        rejectWithValue({ errorCode, errorMessage })
-      });
-
+    let originalUser = auth.currentUser
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      getAuth().updateCurrentUser(originalUser)
+      return userCredential.user.uid;
+    }
+    catch (e: any) {
+      const errorCode = e.code;
+      const errorMessage = e.message;
+      return rejectWithValue({ code:errorCode, message:errorMessage })
+    }
   }
 )
 
@@ -142,6 +143,7 @@ export const userSlice = createSlice({
     },
     [registerUser.typePrefix + '/rejected']: (state, action) => {
       state.error = action.payload
+      state.loading = false;
     }
 
   },
@@ -153,6 +155,6 @@ export const selectUser = (state: UserState) => state?.user;
 export const loadingUser = (state: UserState) => state.loading;
 export const errorUSer = (state: UserState) => state.error;
 // actions
-export const { logout,signupInit } = userSlice.actions
+export const { logout, signupInit } = userSlice.actions
 
 export default userSlice.reducer;

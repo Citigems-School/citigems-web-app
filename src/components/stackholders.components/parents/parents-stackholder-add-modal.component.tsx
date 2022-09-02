@@ -194,19 +194,19 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                             ]}
                         >
                             <Select placeholder="Relationship">
-                                <Option>
+                                <Option value="single">
                                     Single
                                 </Option>
-                                <Option>
+                                <Option value="married">
                                     Married
                                 </Option>
-                                <Option>
+                                <Option value="separated">
                                     Separated
                                 </Option>
-                                <Option>
+                                <Option value="divorced">
                                     Divorced
                                 </Option>
-                                <Option>
+                                <Option value="widowed">
                                     Widowed
                                 </Option>
                             </Select>

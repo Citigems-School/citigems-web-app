@@ -185,7 +185,23 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
                                 },
                             ]}
                         >
-                            <Input placeholder="Relationship" />
+                            <Select placeholder="Relationship">
+                                <Option value="single">
+                                    Single
+                                </Option>
+                                <Option value="married">
+                                    Married
+                                </Option>
+                                <Option value="separated">
+                                    Separated
+                                </Option>
+                                <Option value="divorced">
+                                    Divorced
+                                </Option>
+                                <Option value="widowed">
+                                    Widowed
+                                </Option>
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
