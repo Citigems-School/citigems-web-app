@@ -136,14 +136,7 @@ export const addUser = createAsyncThunk(
       payload.child_key = (typeof payload.child_key !== "string") ? payload.child_key.join(', ') : payload.child_key
     try {
       switch (payload.role) {
-        case "admin": {
-          payload.parent_key = "";
-          payload.child_key = "";
-          break;
-        };
-        case "teacher": {
-          payload.parent_key = "";
-          payload.child_key = "";
+        case "parent":{
           break;
         }
         default: {

@@ -97,12 +97,12 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                         <Form.Item
                             name="name"
                             label="Name"
-                            rules={[
+                            rules={!defaultObject ? [
                                 {
                                     required: true,
                                     message: "This field is required"
                                 },
-                            ]}>
+                            ] : undefined}>
                             <Input disabled={!isNil(defaultObject)} placeholder="Name" />
                         </Form.Item>
                     </Col>
@@ -193,21 +193,15 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                                 },
                             ]}
                         >
-                            <Select placeholder="Relationship">
-                                <Option value="single">
-                                    Single
+                            <Select placeholder="Relationship" allowClear>
+                                <Option value="father">
+                                    Father
                                 </Option>
-                                <Option value="married">
-                                    Married
+                                <Option value="mother">
+                                    Mother
                                 </Option>
-                                <Option value="separated">
-                                    Separated
-                                </Option>
-                                <Option value="divorced">
-                                    Divorced
-                                </Option>
-                                <Option value="widowed">
-                                    Widowed
+                                <Option value="guardian">
+                                    Guardian
                                 </Option>
                             </Select>
                         </Form.Item>
@@ -218,7 +212,7 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                             label="Children names"
 
                         >
-                            <Select disabled={!isNil(defaultObject)} placeholder="Child" allowClear showArrow mode="multiple">
+                            <Select value={form.getFieldValue('child_name')} disabled={!isNil(defaultObject)} placeholder="Child" allowClear showArrow mode="multiple">
                                 {
                                     students.registered.concat(students.unregistered).map(
                                         (student: Student) => <Option value={student.student_key}>

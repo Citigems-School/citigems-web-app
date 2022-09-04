@@ -117,11 +117,12 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                                 };
                                 case "parent": {
                                     let children: Student[] = [];
-                                    const listStudents = students.registered.concat(students.unregistered);
-                                    if (!isNil(userData.child_key) && userData.child_key !== "")
-                                        (userData.child_key as string[]).forEach(child => {
+                                    const listStudents = students.registered;
+                                    if (!isNil(userData.child_key) && userData.child_key !== "") {
+                                        ((userData.child_key as string).split(', ')).forEach(child => {
                                             children.push(listStudents.find((s: Student) => s.student_key === child)!);
                                         });
+                                    }
                                     const newParent: Parent = {
                                         objectKey: "",
                                         child_name: children.map(child => child.first_name + " " + child.last_name).join(', ') || "",
@@ -289,9 +290,9 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                             <Form.Item
                                 name="child_key"
                                 label="Child">
-                                <Select placeholder="Child" allowClear showArrow mode="multiple">
+                                <Select value={form.getFieldValue('child_key')} placeholder="Child" allowClear showArrow mode="multiple">
                                     {
-                                        students.registered.concat(students.unregistered).map(
+                                        students.registered.map(
                                             (student: Student) => <Option value={student.student_key}>
                                                 {
                                                     student.first_name + " " + student.last_name
