@@ -1,5 +1,6 @@
-import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
+import { Col, DatePicker, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
+import moment from "moment";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Student } from "../../../models/Student";
@@ -34,7 +35,8 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
             {
                 student: {
                     ...student,
-                    ...values
+                    ...values,
+                    date_of_birth: moment(form.getFieldValue('date_of_birth')).format("DD/MM/YYYY")
                 },
                 type
             }
@@ -206,7 +208,10 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                                 },
                             ]}
                         >
-                            <Input placeholder="Date of Birth" />
+                            <DatePicker placeholder="Date of birth"
+                                style={{ width: '100%' }}
+                                format="DD/MM/YYYY"
+                            />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
