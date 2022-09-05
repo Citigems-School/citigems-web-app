@@ -1,5 +1,6 @@
 import { Col, DatePicker, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
+import { Class } from "models/Class";
 import moment from "moment";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -16,6 +17,8 @@ interface StudentsStackholderAddModalProps {
 const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }: StudentsStackholderAddModalProps) => {
 
     const { loading } = useSelector((state: RootState) => state.admins);
+    const { classes } = useSelector((state: RootState) => state.classes);
+
     const thunkDispatch = useAppThunkDispatch();
 
     const [form] = useForm();
@@ -29,14 +32,16 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
     };
 
     async function handleSubmit(values: any) {
+        console.log(values)
         await thunkDispatch(addStudent({
             student: {
                 ...values,
-                date_of_birth:moment(form.getFieldValue('date_of_birth')).format("DD/MM/YYYY")
+                date_of_birth: moment(values.date_of_birth).format("DD/MM/YYYY"),
+                current_class: values.current_class.join(', ')
             },
             type: type
         }));
-        handleCancel();
+        //handleCancel();
     }
 
     return (
@@ -217,14 +222,18 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                         <Form.Item
                             name="current_class"
                             label="Current Class"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}
                         >
-                            <Input placeholder="Current Class" />
+                            <Select placeholder="Current Class" allowClear showArrow mode="multiple">
+                                {
+                                    classes.map(
+                                        (classObj: Class) => <Option value={classObj.class_name}>
+                                            {
+                                                classObj.class_name
+                                            }
+                                        </Option>
+                                    )
+                                }
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>

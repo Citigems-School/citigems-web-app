@@ -1,5 +1,6 @@
 import { Col, DatePicker, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
+import { Class } from "models/Class";
 import moment from "moment";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -17,6 +18,7 @@ interface StudentStackholderEditModalProps {
 
 const StudentStackholderEditModal = ({ type = "registered", student, isOpen, closeModal }: StudentStackholderEditModalProps) => {
 
+    const { classes } = useSelector((state: RootState) => state.classes);
     const { loading } = useSelector((state: RootState) => state.admins);
     const thunkDispatch = useAppThunkDispatch();
 
@@ -31,12 +33,14 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
     };
 
     async function handleSubmit(values: any) {
+        console.log(values);
         await thunkDispatch(editStudent(
             {
                 student: {
                     ...student,
                     ...values,
-                    date_of_birth: moment(form.getFieldValue('date_of_birth')).format("DD/MM/YYYY")
+                    date_of_birth: moment(values.date_of_birth).format("DD/MM/YYYY"),
+                    current_class: typeof values.current_class === "string" ? values.current_class : values.current_class.join(', ')
                 },
                 type
             }
@@ -62,7 +66,12 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                 onFinish={handleSubmit}
                 form={form}
                 size={"large"}
-                initialValues={student}
+                initialValues={{
+                    ...student,
+                    date_of_birth: student && moment(student.date_of_birth),
+                    current_class: student && student.current_class.split(', ')
+
+                }}
             >
                 <Row gutter={[24, 0]}>
                     <Col xs={24} lg={12}>
@@ -208,7 +217,8 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                                 },
                             ]}
                         >
-                            <DatePicker placeholder="Date of birth"
+                            <DatePicker
+                                placeholder="Date of birth"
                                 style={{ width: '100%' }}
                                 format="DD/MM/YYYY"
                             />
@@ -218,14 +228,18 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                         <Form.Item
                             name="current_class"
                             label="Current Class"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}
                         >
-                            <Input placeholder="Current Class" />
+                            <Select placeholder="Current Class" allowClear showArrow mode="multiple">
+                                {
+                                    classes.map(
+                                        (classObj: Class) => <Option value={classObj.class_name}>
+                                            {
+                                                classObj.class_name
+                                            }
+                                        </Option>
+                                    )
+                                }
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
