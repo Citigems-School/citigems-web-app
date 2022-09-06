@@ -1,12 +1,21 @@
-import { Col, DatePicker, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
+import { Col, DatePicker, Form, Input, message, Modal, PageHeader, Row, Select, Switch, UploadFile } from "antd";
 import { useForm } from "antd/es/form/Form";
+import Upload, { RcFile } from "antd/lib/upload";
 import { Class } from "models/Class";
 import moment from "moment";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { addStudent } from "../../../store/reducers/studentsSlice";
 import { RootState, useAppThunkDispatch } from "../../../store/store";
-
+import {
+    getDownloadURL,
+    getStorage,
+    ref,
+    uploadBytesResumable
+} from "firebase/storage";
+import { PlusOutlined } from "@ant-design/icons";
+import {v4 as uuidv4} from "uuid";
+import { app } from "utils/firebase";
 
 interface StudentsStackholderAddModalProps {
     isOpen: boolean;
@@ -20,7 +29,8 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
     const { classes } = useSelector((state: RootState) => state.classes);
 
     const thunkDispatch = useAppThunkDispatch();
-
+    const [loadingFile, setLoadingFile] = useState(false);
+    const [file, setFile] = useState<UploadFile>();
     const [form] = useForm();
     const { Option } = Select;
 
@@ -32,7 +42,8 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
     };
 
     async function handleSubmit(values: any) {
-        console.log(values)
+        handleUpload();
+        delete values.birth_cert;
         await thunkDispatch(addStudent({
             student: {
                 ...values,
@@ -44,9 +55,56 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
         //handleCancel();
     }
 
+
+    function handleUpload() {
+        if (file) {
+            setLoadingFile(true);
+            const path = `${uuidv4()}`;
+            const storage = getStorage(app);
+            const fileRef = ref(storage, path);
+
+            const uploadTask = uploadBytesResumable(fileRef, file as RcFile);
+
+            uploadTask.on(
+                "state_changed",
+                () => { },
+                () => {
+                    message.error("Upload failed").then();
+                    setLoadingFile(false);
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        form.setFieldsValue({
+                            birth_certificate_photo_url: downloadURL
+                        });
+                        message.success("Upload success").then();
+                        setLoadingFile(false);
+                    });
+
+                }
+            );
+        }
+    }
+
+    function beforeUpload(
+        file: RcFile
+    ) {
+        const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+        if (!isJpgOrPng) {
+            message.error("File isn't acceptable").then();
+        }
+
+        if (!(file.size / 1024 / 1024 < 2)) {
+            message.error("File is too big").then();
+        }
+        setFile(file);
+
+        return false;
+    }
+
     return (
         <Modal visible={isOpen} width={700}
-            confirmLoading={loading}
+            confirmLoading={loading || loadingFile}
             onOk={async () => {
                 form.submit();
             }}
@@ -54,7 +112,7 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Add user`}
+                title={`Add Student`}
             />
             <Form
                 name={"add_parent"}
@@ -252,24 +310,43 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
-                            name="birth_certificate_photo_url"
-                            label="Birth Certificate Photo URL"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "This field is required"
-                                },
-                            ]}
-                        >
-                            <Input placeholder="Birth Certificate" />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} lg={12}>
-                        <Form.Item
                             name="additional_info"
                             label="Additional Informations"
                         >
                             <Input placeholder="Additional Informations" />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24}>
+                        <Form.Item
+                            label="Birth Certificate Photo"
+                            style={{ marginBottom: 8 }}
+                            name={"birth_cert"}
+                            valuePropName={"file_list"}>
+                            <Upload
+                                name="image"
+                                listType="picture-card"
+                                beforeUpload={(file) => beforeUpload(file)}
+                                showUploadList={true}
+                                maxCount={1}
+                                accept="image/png,image/jpg"
+                                onRemove={() => {
+                                    setFile(undefined);
+                                }}
+                            >
+                                {file ? null :
+                                    <div>
+                                        <PlusOutlined />
+                                        <div style={{ marginTop: 8 }}>Upload</div>
+                                    </div>
+                                }
+                            </Upload>
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24}>
+                        <Form.Item
+                            name="birth_certificate_photo_url"
+                        >
+                            <Input type="hidden" />
                         </Form.Item>
                     </Col>
                 </Row>

@@ -1,7 +1,7 @@
 export interface Student {
     additional_info: string;
     address: string;
-    birth_certificate_photo_url: string;
+    birth_certificate_photo_url?: string;
     current_class: string;
     date_of_birth: string;
     father_first_name: string;

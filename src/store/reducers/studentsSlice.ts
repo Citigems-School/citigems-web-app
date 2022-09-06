@@ -3,8 +3,9 @@ import { child, equalTo, get, orderByChild, push, query, ref, remove, update } f
 import _, { defaults, isNil, omitBy } from 'lodash';
 import { toArray } from 'lodash';
 import { ErrorResponse } from '../../models/ErrorResponse';
-import { db } from '../../utils/firebase';
+import { app, db } from '../../utils/firebase';
 import { Student, studentDefaultObject } from '../../models/Student';
+import { deleteObject, getStorage, ref as refStorage } from 'firebase/storage';
 
 export interface StudentsState {
     students: {
@@ -135,6 +136,27 @@ export const addStudent = createAsyncThunk(
     }
 )
 
+export const removeBirthCert = createAsyncThunk(
+    'Students/removeBirthCert',
+    async ({ student, type, url }: {
+        student: Student;
+        type: string;
+        url: string;
+    }, { rejectWithValue, getState }) => {
+        const storage = getStorage(app);
+        const storageRef = refStorage(storage, url);
+
+        await deleteObject(storageRef);
+        let updates = {}
+        //@ts-ignore
+        updates[`/stakeholders/students/${type}/` + student.student_key] = omitBy({
+            ...student,
+            birth_certificate_photo_url: ''
+        }, isNil);
+        await update(ref(db), updates);
+    }
+)
+
 export const studentsSlice = createSlice({
     name: 'Students',
     initialState: initialState,
@@ -216,6 +238,16 @@ export const studentsSlice = createSlice({
             state.loading = false;
         },
 
+
+        [removeBirthCert.typePrefix + "/pending"]: (state, action) => {
+            state.loading = true;
+        },
+        [removeBirthCert.typePrefix + '/fulfilled']: (state, action) => {
+            state.loading = false;
+        },
+        [removeBirthCert.typePrefix + '/rejected']: (state, action) => {
+            state.loading = false;
+        },
     },
 });
 

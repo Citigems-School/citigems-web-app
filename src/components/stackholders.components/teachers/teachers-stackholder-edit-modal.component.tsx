@@ -17,7 +17,7 @@ interface TeacherStackholderEditModalProps {
 
 const TeacherStackholderEditModal = ({ teacher, isOpen, closeModal }: TeacherStackholderEditModalProps) => {
 
-    const { loading } = useSelector((state: RootState) => state.admins);
+    const { loading } = useSelector((state: RootState) => state.teachers);
     const { users } = useSelector((state: RootState) => state.users);
     const { classes } = useSelector((state: RootState) => state.classes);
     const thunkDispatch = useAppThunkDispatch();

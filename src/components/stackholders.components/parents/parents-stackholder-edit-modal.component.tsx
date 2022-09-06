@@ -18,7 +18,7 @@ interface ParentStackholderEditModalProps {
 const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackholderEditModalProps) => {
 
     const { users } = useSelector((state: RootState) => state.users);
-    const { loading } = useSelector((state: RootState) => state.admins);
+    const { loading } = useSelector((state: RootState) => state.parents);
     const { students } = useSelector((state: RootState) => state.students);
 
     const thunkDispatch = useAppThunkDispatch();
