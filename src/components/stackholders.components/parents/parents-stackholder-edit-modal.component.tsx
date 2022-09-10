@@ -26,7 +26,9 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
     const [form] = useForm();
     const { Option } = Select;
 
-    useEffect(() => form.resetFields(), [parent, form]);
+    useEffect(() => {
+        form.resetFields()
+    }, [parent, form]);
 
     const handleCancel = () => {
         form.resetFields();

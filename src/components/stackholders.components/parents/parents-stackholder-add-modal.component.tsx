@@ -30,7 +30,9 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
     const [form] = useForm();
     const { Option } = Select;
 
-    useEffect(() => form.resetFields(), [isOpen]);
+    useEffect(() => {
+        form.resetFields()
+    }, [isOpen]);
 
     const handleCancel = () => {
         if (!isNil(defaultObject)) {

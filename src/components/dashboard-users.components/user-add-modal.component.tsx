@@ -118,14 +118,14 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                                 case "parent": {
                                     let children: Student[] = [];
                                     const listStudents = students.registered;
-                                    if (!isNil(userData.child_key) && userData.child_key !== "") {
+                                    if (!isNil(userData.child_key) && userData.child_key !== "" && typeof userData.child_key === "string") {
                                         ((userData.child_key as string).split(', ')).forEach(child => {
                                             children.push(listStudents.find((s: Student) => s.student_key === child)!);
                                         });
                                     }
                                     const newParent: Parent = {
                                         objectKey: "",
-                                        child_name: children.map(child => child.first_name + " " + child.last_name).join(', ') || "",
+                                        child_name: children.map(child => child.first_name + " " + child.last_name),
                                         email: userData.email,
                                         name: userData.first_name + " " + userData.last_name,
                                         number_of_children: children.length.toString(),
