@@ -5,7 +5,7 @@ import { Class } from "models/Class";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { addStudent } from "../../../store/reducers/studentsSlice";
+import { addStudent, editStudent } from "../../../store/reducers/studentsSlice";
 import { RootState, useAppThunkDispatch } from "../../../store/store";
 import {
     getDownloadURL,
@@ -14,7 +14,6 @@ import {
     uploadBytesResumable
 } from "firebase/storage";
 import { PlusOutlined } from "@ant-design/icons";
-import {v4 as uuidv4} from "uuid";
 import { app } from "utils/firebase";
 
 interface StudentsStackholderAddModalProps {
@@ -31,6 +30,8 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
     const thunkDispatch = useAppThunkDispatch();
     const [loadingFile, setLoadingFile] = useState(false);
     const [file, setFile] = useState<UploadFile>();
+    const [childImage, setChildImage] = useState<UploadFile>();
+
     const [form] = useForm();
     const { Option } = Select;
 
@@ -42,9 +43,11 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
     };
 
     async function handleSubmit(values: any) {
-        handleUpload();
+
         delete values.birth_cert;
-        await thunkDispatch(addStudent({
+        delete values.image_child;
+
+        const result: any = await thunkDispatch(addStudent({
             student: {
                 ...values,
                 date_of_birth: moment(values.date_of_birth).format("DD/MM/YYYY"),
@@ -52,19 +55,38 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
             },
             type: type
         }));
-        //handleCancel();
+
+        const birth_certificate = await handleUpload('birth_certificates', result, file!);
+        const students_profile_images = await handleUpload('students_profile_images', result, childImage!);
+
+        await thunkDispatch(editStudent({
+            student: {
+                student_key: result.payload.response.student_key,
+                ...result.payload.response,
+                date_of_birth: result.payload.response.date_of_birth,
+                current_class: result.payload.response.current_class,
+                image_of_child_url: students_profile_images,
+                birth_certificate_photo_url: birth_certificate,
+            },
+            type: type
+        }));
+
+        setLoadingFile(false);
+        handleCancel();
+
     }
 
 
-    function handleUpload() {
-        if (file) {
+    function handleUpload(pathURI: string, studentObj: any, uploadFile: UploadFile) {
+        if (uploadFile) {
             setLoadingFile(true);
-            const path = `${uuidv4()}`;
+            const path = `/${pathURI}/${studentObj.payload.response.student_key}/${uploadFile.name}`;
             const storage = getStorage(app);
             const fileRef = ref(storage, path);
 
-            const uploadTask = uploadBytesResumable(fileRef, file as RcFile);
+            let result: string;
 
+            const uploadTask = uploadBytesResumable(fileRef, uploadFile as RcFile);
             uploadTask.on(
                 "state_changed",
                 () => { },
@@ -73,31 +95,53 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                     setLoadingFile(false);
                 },
                 () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        form.setFieldsValue({
-                            birth_certificate_photo_url: downloadURL
-                        });
-                        message.success("Upload success").then();
-                        setLoadingFile(false);
+                    return getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                        result = downloadURL;
                     });
-
                 }
             );
+            return new Promise<string>((resolve, reject) => {
+                const checkDownloadIsFinished = setInterval(() => {
+                    if (result && result.length > 0) {
+                        clearInterval(checkDownloadIsFinished);
+                        resolve(result);
+                    }
+                }, 1000);
+            });
+
         }
     }
 
     function beforeUpload(
-        file: RcFile
+        fileBeforeUpload: RcFile
     ) {
-        const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+        const isJpgOrPng = fileBeforeUpload.type === "image/jpeg" || fileBeforeUpload.type === "image/png";
+        if (!isJpgOrPng) {
+            message.error("File isn't acceptable").then();
+            return;
+        }
+
+        if (!(fileBeforeUpload.size / 1024 / 1024 < 2)) {
+            message.error("File is too big").then();
+            return;
+        }
+        setFile(fileBeforeUpload);
+
+        return false;
+    }
+
+    function beforeUploadChildImage(
+        fileBeforeUpload: RcFile
+    ) {
+        const isJpgOrPng = fileBeforeUpload.type === "image/jpeg" || fileBeforeUpload.type === "image/png";
         if (!isJpgOrPng) {
             message.error("File isn't acceptable").then();
         }
 
-        if (!(file.size / 1024 / 1024 < 2)) {
+        if (!(fileBeforeUpload.size / 1024 / 1024 < 2)) {
             message.error("File is too big").then();
         }
-        setFile(file);
+        setChildImage(fileBeforeUpload);
 
         return false;
     }
@@ -316,21 +360,21 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                             <Input placeholder="Additional Informations" />
                         </Form.Item>
                     </Col>
-                    <Col xs={24}>
+                    <Col xs={12}>
                         <Form.Item
-                            label="Birth Certificate Photo"
+                            label="Child's Image"
                             style={{ marginBottom: 8 }}
-                            name={"birth_cert"}
-                            valuePropName={"file_list"}>
+                            name={"image_child"}>
                             <Upload
-                                name="image"
+                                id="imageChild"
+                                name="imageChild"
                                 listType="picture-card"
-                                beforeUpload={(file) => beforeUpload(file)}
+                                beforeUpload={(fileToUpload) => beforeUploadChildImage(fileToUpload)}
                                 showUploadList={true}
                                 maxCount={1}
                                 accept="image/png,image/jpg"
                                 onRemove={() => {
-                                    setFile(undefined);
+                                    setChildImage(undefined);
                                 }}
                             >
                                 {file ? null :
@@ -342,9 +386,43 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                             </Upload>
                         </Form.Item>
                     </Col>
-                    <Col xs={24}>
+                    <Col xs={12}>
+                        <Form.Item
+                            label="Birth Certificate Photo"
+                            style={{ marginBottom: 8 }}
+                            name={"birth_cert"}>
+                            <Upload
+                                id="image"
+                                name="image"
+                                listType="picture-card"
+                                beforeUpload={(fileToUpload) => beforeUpload(fileToUpload)}
+                                showUploadList={true}
+                                maxCount={1}
+                                accept="image/png,image/jpg"
+                                onRemove={() => {
+                                    setFile(undefined);
+                                }}
+
+                            >
+                                {childImage ? null :
+                                    <div>
+                                        <PlusOutlined />
+                                        <div style={{ marginTop: 8 }}>Upload</div>
+                                    </div>
+                                }
+                            </Upload>
+                        </Form.Item>
+                    </Col>
+                    <Col xs={12}>
                         <Form.Item
                             name="birth_certificate_photo_url"
+                        >
+                            <Input type="hidden" />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={12}>
+                        <Form.Item
+                            name="image_of_child_url"
                         >
                             <Input type="hidden" />
                         </Form.Item>

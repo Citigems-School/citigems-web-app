@@ -29,7 +29,7 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
     const thunkDispatch = useAppThunkDispatch();
     const [loadingFile, setLoadingFile] = useState(false);
     const [files, setFiles] = useState<UploadFile[]>([]);
-
+    const [childImage, setChildImage] =  useState<UploadFile[]>([]);
     const [form] = useForm();
     const { Option } = Select;
 
@@ -38,6 +38,15 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
             setFiles([{
                 uid: "file",
                 name: "Certificate of birth",
+                status: "done",
+                url: student.birth_certificate_photo_url,
+                type: "image/png"
+            }])
+        }
+        if (student && student.birth_certificate_photo_url) {
+            setFiles([{
+                uid: "file",
+                name: "Child's Photos",
                 status: "done",
                 url: student.birth_certificate_photo_url,
                 type: "image/png"
@@ -53,7 +62,12 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
 
     async function handleSubmit(values: any) {
 
-        handleUpload();
+        const birth_certificate = await handleUpload('birth_certificates', student, files[0]);
+        const students_profile_images = await handleUpload('students_profile_images', student, childImage[0]);
+        
+        delete values.birth_cert;
+        delete values.image_child;
+        
         await thunkDispatch(editStudent(
             {
                 student: {
@@ -61,7 +75,9 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                     ...values,
                     birth_cert: undefined,
                     date_of_birth: moment(values.date_of_birth).format("DD/MM/YYYY"),
-                    current_class: typeof values.current_class === "string" ? values.current_class : values.current_class.join(', ')
+                    current_class: typeof values.current_class === "string" ? values.current_class : values.current_class.join(', '),
+                    image_of_child_url: students_profile_images,
+                    birth_certificate_photo_url: birth_certificate,
                 },
                 type
             }
@@ -71,15 +87,16 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
     }
 
 
-    function handleUpload() {
-        if (files.length > 0 && files[0]) {
+    function handleUpload(pathURI: string, studentObj: Student, uploadFile: UploadFile) {
+        if (uploadFile) {
             setLoadingFile(true);
-            const path = `${uuidv4()}`;
+            const path = `/${pathURI}/${studentObj.student_key}/${uploadFile.name}`;
             const storage = getStorage(app);
             const fileRef = ref(storage, path);
 
-            const uploadTask = uploadBytesResumable(fileRef, files[0] as RcFile);
+            let result: string;
 
+            const uploadTask = uploadBytesResumable(fileRef, uploadFile as RcFile);
             uploadTask.on(
                 "state_changed",
                 () => { },
@@ -88,31 +105,53 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                     setLoadingFile(false);
                 },
                 () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        form.setFieldsValue({
-                            birth_certificate_photo_url: downloadURL
-                        });
-                        message.success("Upload success").then();
-                        setLoadingFile(false);
+                    return getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                        result = downloadURL;
                     });
-
                 }
             );
+            return new Promise<string>((resolve, reject) => {
+                const checkDownloadIsFinished = setInterval(() => {
+                    if (result && result.length > 0) {
+                        clearInterval(checkDownloadIsFinished);
+                        resolve(result);
+                    }
+                }, 1000);
+            });
+
         }
     }
 
     function beforeUpload(
-        file: RcFile
+        fileBeforeUpload: RcFile
     ) {
-        const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+        const isJpgOrPng = fileBeforeUpload.type === "image/jpeg" || fileBeforeUpload.type === "image/png";
+        if (!isJpgOrPng) {
+            message.error("File isn't acceptable").then();
+            return;
+        }
+
+        if (!(fileBeforeUpload.size / 1024 / 1024 < 2)) {
+            message.error("File is too big").then();
+            return;
+        }
+        setFiles([fileBeforeUpload]);
+
+        return false;
+    }
+
+    function beforeUploadChildImage(
+        fileBeforeUpload: RcFile
+    ) {
+        const isJpgOrPng = fileBeforeUpload.type === "image/jpeg" || fileBeforeUpload.type === "image/png";
         if (!isJpgOrPng) {
             message.error("File isn't acceptable").then();
         }
 
-        if (!(file.size / 1024 / 1024 < 2)) {
+        if (!(fileBeforeUpload.size / 1024 / 1024 < 2)) {
             message.error("File is too big").then();
         }
-        setFiles([file]);
+        setChildImage([fileBeforeUpload]);
 
         return false;
     }
@@ -333,32 +372,52 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                             <Input placeholder="Additional Informations" />
                         </Form.Item>
                     </Col>
-                    <Col xs={24}>
+
+                    <Col xs={12}>
                         <Form.Item
-                            label="Birth Certificate Photo"
+                            label="Child's Image"
                             style={{ marginBottom: 8 }}
-                            name={"birth_cert"}
-                            valuePropName={"file_list"}>
+                            name={"image_child"}>
                             <Upload
-                                name="image"
+                                id="imageChild"
+                                name="imageChild"
                                 listType="picture-card"
-                                beforeUpload={(file) => beforeUpload(file)}
-                                fileList={files}
+                                beforeUpload={(fileToUpload) => beforeUploadChildImage(fileToUpload)}
                                 showUploadList={true}
                                 maxCount={1}
                                 accept="image/png,image/jpg"
-                                onRemove={async (file) => {
-                                    await thunkDispatch(
-                                        removeBirthCert(
-                                            {
-                                                student,
-                                                type: type,
-                                                url: student.birth_certificate_photo_url!
-                                            }
-                                        )
-                                    );
+                                fileList={childImage}
+                                onRemove={() => {
+                                    setChildImage([]);
+                                }}
+                            >
+                                {childImage[0] ? null :
+                                    <div>
+                                        <PlusOutlined />
+                                        <div style={{ marginTop: 8 }}>Upload</div>
+                                    </div>
+                                }
+                            </Upload>
+                        </Form.Item>
+                    </Col>
+                    <Col xs={12}>
+                        <Form.Item
+                            label="Birth Certificate Photo"
+                            style={{ marginBottom: 8 }}
+                            name={"birth_cert"}>
+                            <Upload
+                                id="image"
+                                name="image"
+                                listType="picture-card"
+                                beforeUpload={(fileToUpload) => beforeUpload(fileToUpload)}
+                                showUploadList={true}
+                                fileList={files}
+                                maxCount={1}
+                                accept="image/png,image/jpg"
+                                onRemove={() => {
                                     setFiles([]);
                                 }}
+
                             >
                                 {files[0] ? null :
                                     <div>
@@ -369,9 +428,16 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                             </Upload>
                         </Form.Item>
                     </Col>
-                    <Col xs={24}>
+                    <Col xs={12}>
                         <Form.Item
                             name="birth_certificate_photo_url"
+                        >
+                            <Input type="hidden" />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={12}>
+                        <Form.Item
+                            name="image_of_child_url"
                         >
                             <Input type="hidden" />
                         </Form.Item>
