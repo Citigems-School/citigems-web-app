@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { child, equalTo, get, orderByChild, push, query, ref, remove, update } from 'firebase/database';
-import _, { isNil, omitBy } from 'lodash';
+import _, { defaults, isNil, omitBy } from 'lodash';
 import { toArray } from 'lodash';
 import { ErrorResponse } from '../../models/ErrorResponse';
 import { db } from '../../utils/firebase';
@@ -183,7 +183,3 @@ export const errorTeachers = (state: TeachersState) => state.error;
 export const { } = teachersSlice.actions
 
 export default teachersSlice.reducer;
-
-function defaults(payload: Teacher, teacherDefaultObject: Teacher): any {
-    throw new Error('Function not implemented.');
-}
