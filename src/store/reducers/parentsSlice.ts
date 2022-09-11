@@ -104,7 +104,7 @@ export const addParent = createAsyncThunk(
     async ({newParent,students}: {
         newParent:Parent,
         students:Student[]
-    }, {getState,rejectWithValue}) => {
+    }, {rejectWithValue}) => {
 
         try {
             newParent.number_of_children = newParent.child_name.length.toString();

@@ -164,7 +164,7 @@ export default function UsersTable() {
             width: 2,
             align: "center",
             render: (value) => {
-                const result = students.registered.concat(students.unregistered).find(student => student.student_key === value)
+                const result = students.registered.find(student => student.student_key === value)
                 return result ? `${result?.first_name} ${result?.last_name}` : ""
             },
             sorter: (a, b) => a.other_numbers?.localeCompare(b.other_numbers || "") || 0

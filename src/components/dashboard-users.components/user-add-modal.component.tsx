@@ -125,7 +125,7 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                                     }
                                     const newParent: Parent = {
                                         objectKey: "",
-                                        child_name: children.map(child => child.first_name + " " + child.last_name),
+                                        child_name: children.map(child => child.student_key),
                                         email: userData.email,
                                         name: userData.first_name + " " + userData.last_name,
                                         number_of_children: children.length.toString(),

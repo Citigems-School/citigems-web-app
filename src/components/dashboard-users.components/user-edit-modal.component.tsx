@@ -161,7 +161,7 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
                             <Select allowClear showArrow mode="multiple"
                                 placeholder="Child">
                                 {
-                                    students.registered.concat(students.unregistered).map(
+                                    students.registered.map(
                                         (student: Student) => <Option value={student.student_key}>
                                             {
                                                 student.first_name + " " + student.last_name

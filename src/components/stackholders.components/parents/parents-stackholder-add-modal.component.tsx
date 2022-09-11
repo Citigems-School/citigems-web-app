@@ -44,9 +44,13 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
     };
 
     async function handleSubmit(values: any) {
+        console.log(defaultObject)
         await thunkDispatch(addParent({
-            newParent: values,
-            students: students.registered.concat(students.unregistered)
+            newParent: {
+                ...values,
+                child_name: defaultObject ? defaultObject.child_name : values.child_name
+            },
+            students: students.registered
         }));
         handleCancel();
     }
@@ -69,7 +73,9 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                 onFinish={handleSubmit}
                 form={form}
                 size={"large"}
-                initialValues={defaultObject}
+                initialValues={{
+                    ...defaultObject,
+                }}
             >
                 <Row gutter={[24, 0]}>
                     <Col xs={24} lg={12}>
@@ -216,7 +222,7 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                         >
                             <Select value={form.getFieldValue('child_name')} disabled={!isNil(defaultObject)} placeholder="Child" allowClear showArrow mode="multiple">
                                 {
-                                    students.registered.concat(students.unregistered).map(
+                                    students.registered.map(
                                         (student: Student) => <Option value={student.student_key}>
                                             {
                                                 student.first_name + " " + student.last_name

@@ -213,7 +213,7 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
                         >
                             <Select placeholder="Child" allowClear showArrow mode="multiple">
                                 {
-                                    students.registered.concat(students.unregistered).map(
+                                    students.registered.map(
                                         (student: Student) => <Option value={student.student_key}>
                                             {
                                                 student.first_name + " " + student.last_name
