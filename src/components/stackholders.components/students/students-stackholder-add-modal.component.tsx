@@ -377,7 +377,7 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                                     setChildImage(undefined);
                                 }}
                             >
-                                {file ? null :
+                                {childImage ? null :
                                     <div>
                                         <PlusOutlined />
                                         <div style={{ marginTop: 8 }}>Upload</div>
@@ -404,7 +404,7 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                                 }}
 
                             >
-                                {childImage ? null :
+                                {file ? null :
                                     <div>
                                         <PlusOutlined />
                                         <div style={{ marginTop: 8 }}>Upload</div>

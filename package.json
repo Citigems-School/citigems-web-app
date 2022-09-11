@@ -1,6 +1,6 @@
 {
   "name": "citigems-web-app",
-  "version": "1.0.3",
+  "version": "1.0.6",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
