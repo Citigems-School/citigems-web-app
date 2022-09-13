@@ -1,8 +1,12 @@
-import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { Col, Form, Input, message, Modal, PageHeader, Row, Select, Switch, Upload, UploadFile } from "antd";
 import { useForm } from "antd/es/form/Form";
+import { RcFile } from "antd/lib/upload";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { isNil } from "lodash";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { app } from "utils/firebase";
 import { Parent } from "../../models/Parent";
 import { Student } from "../../models/Student";
 import { User } from "../../models/User";
@@ -22,11 +26,28 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
     const { students } = useSelector((state: RootState) => state.students);
 
     const thunkDispatch = useAppThunkDispatch();
+    const [files, setFiles] = useState<UploadFile[]>([]);
+    const [loadingFile, setLoadingFile] = useState(false);
 
     const [form] = useForm();
     const { Option } = Select;
 
-    useEffect(() => form.resetFields(), [user, form]);
+    useEffect(() => {
+
+        if (user && user.photo_url) {
+            setFiles([{
+                uid: "file",
+                name: "User's Photo",
+                status: "done",
+                url: user.photo_url,
+                type: "image/png"
+            }])
+        }
+
+        form.resetFields();
+        setLoadingFile(false);
+
+    }, [user, form]);
 
     const handleCancel = () => {
         form.resetFields();
@@ -34,16 +55,75 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
     };
 
     async function handleSubmit(values: any) {
+        const photo_url = await handleUpload(user.user_id, files[0]);
+        delete values.user_photo;
+
         await thunkDispatch(editUser({
             ...user,
-            ...values
+            ...values,
+            photo_url
+
         }));
         handleCancel();
     }
 
+    function handleUpload(userId: string, uploadFile: UploadFile) {
+        if (uploadFile) {
+            setLoadingFile(true);
+            const path = `/user_photos/${userId}/${uploadFile.name}`;
+            const storage = getStorage(app);
+            const fileRef = ref(storage, path);
+
+            let result: string;
+
+            const uploadTask = uploadBytesResumable(fileRef, uploadFile as RcFile);
+            uploadTask.on(
+                "state_changed",
+                () => { },
+                () => {
+                    message.error("Upload failed").then();
+                    setLoadingFile(false);
+                },
+                () => {
+                    return getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                        result = downloadURL;
+                    });
+                }
+            );
+            return new Promise<string>((resolve, reject) => {
+                const checkDownloadIsFinished = setInterval(() => {
+                    if (result && result.length > 0) {
+                        clearInterval(checkDownloadIsFinished);
+                        resolve(result);
+                    }
+                }, 1000);
+            });
+
+        }
+    }
+
+    function beforeUpload(
+        fileBeforeUpload: RcFile
+    ) {
+        const isJpgOrPng = fileBeforeUpload.type === "image/jpeg" || fileBeforeUpload.type === "image/png";
+        if (!isJpgOrPng) {
+            message.error("File isn't acceptable").then();
+            return;
+        }
+
+        if (!(fileBeforeUpload.size / 1024 / 1024 < 2)) {
+            message.error("File is too big").then();
+            return;
+        }
+        setFiles([fileBeforeUpload]);
+
+        return false;
+    }
+
+
     return (
         <Modal visible={isOpen} width={700}
-            confirmLoading={loading}
+            confirmLoading={loading || loadingFile}
             onOk={async () => {
                 form.submit();
             }}
@@ -130,13 +210,7 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
                             <Input placeholder="Other Number" />
                         </Form.Item>
                     </Col>
-                    <Col xs={24} lg={12}>
-                        <Form.Item
-                            name="photo_url"
-                            label="Photo URL">
-                            <Input placeholder="Photo URL" />
-                        </Form.Item>
-                    </Col>
+
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="parent_key"
@@ -196,6 +270,34 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
                             </Select>
                         </Form.Item>
                     </Col>
+                    <Col xs={24}>
+                        <Form.Item
+                            label="User's Photo"
+                            style={{ marginBottom: 8, marginTop: 8 }}
+                            name={"user_photo"}>
+                            <Upload
+                                id="image"
+                                name="image"
+                                listType="picture-card"
+                                beforeUpload={(fileToUpload) => beforeUpload(fileToUpload)}
+                                showUploadList={true}
+                                fileList={files}
+                                maxCount={1}
+                                accept="image/png,image/jpg"
+                                onRemove={() => {
+                                    setFiles([]);
+                                }}
+
+                            >
+                                {files[0] ? null :
+                                    <div>
+                                        <PlusOutlined />
+                                        <div style={{ marginTop: 8 }}>Upload</div>
+                                    </div>
+                                }
+                            </Upload>
+                        </Form.Item>
+                    </Col>
                     <Col xs={12} md={4} lg={4}>
                         <Form.Item
                             name="has_child_in_citigems"
@@ -225,3 +327,4 @@ const UserEditModal = ({ user, isOpen, closeModal }: UserEditModalProps) => {
 };
 
 export default UserEditModal;
+

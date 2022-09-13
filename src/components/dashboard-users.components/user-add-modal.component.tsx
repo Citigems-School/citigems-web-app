@@ -1,9 +1,13 @@
-import { Col, Form, Input, message, Modal, PageHeader, Row, Select, Switch } from "antd";
+import { PlusOutlined } from "@ant-design/icons/lib/icons";
+import { Col, Form, Input, message, Modal, PageHeader, Row, Select, Switch, UploadFile } from "antd";
 import { useForm } from "antd/es/form/Form";
+import Upload, { RcFile } from "antd/lib/upload";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { isNil } from "lodash";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, signupInit } from "store/reducers/userSlice";
+import { app } from "utils/firebase";
 import { generatePassword } from "utils/functions";
 import { Admin } from "../../models/Admin";
 import { Parent } from "../../models/Parent";
@@ -31,6 +35,8 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
     const [openSecondModal, setOpenSecondModal] = useState<boolean>();
     const [selectedRole, setSelectedRole] = useState<string>();
     const [createdNewObject, setCreatedNewObject] = useState<Parent | Student | Admin | Teacher | undefined>();
+    const [file, setFile] = useState<UploadFile>();
+    const [loadingFile, setLoadingFile] = useState(false);
 
 
     function closeSecondModal() {
@@ -54,6 +60,7 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
     };
 
     async function handleSubmit(values: any) {
+
         const password = generatePassword()
         thunkDispatch(registerUser({
             email: values.email,
@@ -80,7 +87,9 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                     }
                 }
             } else {
-                const userData: User = { ...values, user_id: response.payload as string };
+                const photo_url = await handleUpload(response.payload as string, file!);
+                delete values.user_photo;
+                const userData: User = { ...values, user_id: response.payload as string, photo_url: photo_url };
                 const result = await thunkDispatch(addUser(userData));
                 Modal.info({
                     title: 'Generated user password',
@@ -177,10 +186,64 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
     }
 
 
+    function handleUpload(userId: string, uploadFile: UploadFile) {
+        if (uploadFile) {
+            setLoadingFile(true);
+            const path = `/user_photos/${userId}/${uploadFile.name}`;
+            const storage = getStorage(app);
+            const fileRef = ref(storage, path);
+
+            let result: string;
+
+            const uploadTask = uploadBytesResumable(fileRef, uploadFile as RcFile);
+            uploadTask.on(
+                "state_changed",
+                () => { },
+                () => {
+                    message.error("Upload failed").then();
+                    setLoadingFile(false);
+                },
+                () => {
+                    return getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                        result = downloadURL;
+                    });
+                }
+            );
+            return new Promise<string>((resolve, reject) => {
+                const checkDownloadIsFinished = setInterval(() => {
+                    if (result && result.length > 0) {
+                        clearInterval(checkDownloadIsFinished);
+                        resolve(result);
+                    }
+                }, 1000);
+            });
+
+        }
+    }
+
+    function beforeUpload(
+        fileBeforeUpload: RcFile
+    ) {
+        const isJpgOrPng = fileBeforeUpload.type === "image/jpeg" || fileBeforeUpload.type === "image/png";
+        if (!isJpgOrPng) {
+            message.error("File isn't acceptable").then();
+            return;
+        }
+
+        if (!(fileBeforeUpload.size / 1024 / 1024 < 2)) {
+            message.error("File is too big").then();
+            return;
+        }
+        setFile(fileBeforeUpload);
+
+        return false;
+    }
+
+
     return (
         <>
             <Modal visible={isOpen && !openSecondModal} width={700}
-                confirmLoading={loading || user.loading}
+                confirmLoading={loading || user.loading || loadingFile}
                 onOk={async () => {
                     form.submit();
                 }}
@@ -264,13 +327,6 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                         </Col>
                         <Col xs={24} lg={12}>
                             <Form.Item
-                                name="photo_url"
-                                label="Photo URL">
-                                <Input placeholder="Photo URL" />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={24} lg={12}>
-                            <Form.Item
                                 name="parent_key"
                                 label="Parent">
                                 <Select placeholder="Parent" allowClear>
@@ -332,6 +388,34 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                                 </Select>
                             </Form.Item>
                         </Col>
+
+                        <Col xs={24}>
+                            <Form.Item
+                                label="User's Photo"
+                                style={{ marginBottom: 8, marginTop: 8 }}
+                                name={"user_photo"}>
+                                <Upload
+                                    id="image"
+                                    name="image"
+                                    listType="picture-card"
+                                    beforeUpload={(fileToUpload) => beforeUpload(fileToUpload)}
+                                    showUploadList={true}
+                                    maxCount={1}
+                                    accept="image/png,image/jpg"
+                                    onRemove={() => {
+                                        setFile(undefined);
+                                    }}
+
+                                >
+                                    {file ? null :
+                                        <div>
+                                            <PlusOutlined />
+                                            <div style={{ marginTop: 8 }}>Upload</div>
+                                        </div>
+                                    }
+                                </Upload>
+                            </Form.Item>
+                        </Col>
                         <Col xs={12} md={4} lg={4}>
                             <Form.Item
                                 name="has_child_in_citigems"
@@ -352,6 +436,13 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                                     checkedChildren={"Yes"}
                                     unCheckedChildren={"No"}
                                 />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={12}>
+                            <Form.Item
+                                name="photo_url"
+                            >
+                                <Input type="hidden" />
                             </Form.Item>
                         </Col>
                     </Row>
