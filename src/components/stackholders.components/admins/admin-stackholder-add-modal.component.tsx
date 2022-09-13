@@ -29,12 +29,11 @@ const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddU
     const { Option } = Select;
 
     useEffect(() => {
-        setIsDone(false);
         form.resetFields();
     }, [isOpen]);
 
     const handleCancel = () => {
-        if (!isNil(defaultObject) && isDone) {
+        if (!isNil(defaultObject) && !isDone) {
             thunkDispatch(removeUser(defaultObject.user_id))
         }
         form.resetFields();
@@ -42,10 +41,16 @@ const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddU
         closeAddUserModal?.();
     };
 
+    const handleExit = () => {
+        form.resetFields();
+        closeModal();
+        closeAddUserModal?.();
+    }
+
     async function handleSubmit(values: any) {
         await thunkDispatch(addAdmin(values));
-        setIsDone(isDone);
-        handleCancel();
+        setIsDone(true);
+        handleExit();
     }
 
     return (

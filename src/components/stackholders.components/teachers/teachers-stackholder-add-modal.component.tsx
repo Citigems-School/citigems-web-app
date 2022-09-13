@@ -2,7 +2,7 @@ import { Col, Form, Input, Modal, PageHeader, Row, Select } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { isNil } from "lodash";
 import { Class } from "models/Class";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Teacher } from "../../../models/Teacher";
 import { User } from "../../../models/User";
@@ -26,14 +26,17 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
     const { classes } = useSelector((state: RootState) => state.classes);
 
     const thunkDispatch = useAppThunkDispatch();
+    const [isDone, setIsDone] = useState(false)
 
     const [form] = useForm();
     const { Option } = Select;
 
-    useEffect(() => form.resetFields(), [isOpen]);
+    useEffect(() => { 
+        form.resetFields()
+     }, [isOpen]);
 
     const handleCancel = () => {
-        if (!isNil(defaultObject)) {
+        if (!isNil(defaultObject) && !isDone) {
             thunkDispatch(removeUser(defaultObject.user_id))
         }
         closeModal();
@@ -41,10 +44,18 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
         form.resetFields();
     };
 
+    const handleExit = () => {
+        form.resetFields();
+        closeModal();
+        closeAddUserModal?.();
+    }
+
     async function handleSubmit(values: any) {
         await thunkDispatch(addTeacher(values));
-        handleCancel();
+        setIsDone(true);
+        handleExit();
     }
+
 
     return (
         <Modal visible={isOpen} width={700}
@@ -120,7 +131,7 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                         <Form.Item
                             name="other_numbers"
                             label="Other Numbers"
-                            >
+                        >
                             <Input disabled={!isNil(defaultObject)} placeholder="Other Numbers" />
                         </Form.Item>
                     </Col>
@@ -160,7 +171,7 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                                 },
                             ]}
                         >
-                        <Select placeholder="Marital Status">
+                            <Select placeholder="Marital Status">
                                 <Option value="single">
                                     Single
                                 </Option>
@@ -177,7 +188,7 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                                     Widowed
                                 </Option>
                             </Select>
-    
+
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>

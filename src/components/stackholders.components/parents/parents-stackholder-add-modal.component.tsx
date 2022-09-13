@@ -1,7 +1,7 @@
 import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { isNil } from "lodash";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Parent } from "../../../models/Parent";
 import { Student } from "../../../models/Student";
@@ -26,6 +26,7 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
     const { students } = useSelector((state: RootState) => state.students);
 
     const thunkDispatch = useAppThunkDispatch();
+    const [isDone, setIsDone] = useState(false)
 
     const [form] = useForm();
     const { Option } = Select;
@@ -35,7 +36,7 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
     }, [isOpen]);
 
     const handleCancel = () => {
-        if (!isNil(defaultObject)) {
+        if (!isNil(defaultObject) && !isDone ) {
             thunkDispatch(removeUser(defaultObject.user_id))
         }
         form.resetFields();
@@ -43,8 +44,13 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
         closeAddUserModal?.();
     };
 
+    const handleExit = () => {
+        form.resetFields();
+        closeModal();
+        closeAddUserModal?.();
+    }
+
     async function handleSubmit(values: any) {
-        console.log(defaultObject)
         await thunkDispatch(addParent({
             newParent: {
                 ...values,
@@ -52,7 +58,8 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
             },
             students: students.registered
         }));
-        handleCancel();
+        setIsDone(true);
+        handleExit();
     }
 
     return (
