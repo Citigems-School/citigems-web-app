@@ -68,7 +68,7 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
                 size={"large"}
                 initialValues={{
                     ...parent,
-                    child_name: (parent.child_name as string).split(', ')
+                    child_name: parent && (parent.child_name as string).split(', ')
                 }}
             >
                 <Row gutter={[24, 0]}>
