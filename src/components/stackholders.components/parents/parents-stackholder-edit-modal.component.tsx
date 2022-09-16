@@ -37,8 +37,12 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
 
     async function handleSubmit(values: any) {
         await thunkDispatch(editParent({
-            ...parent,
-            ...values
+            newParent: {
+                ...parent,
+                ...values
+            },
+            user: users.find((user: User) => user.user_id === values.user_id)!,
+            students: students.registered,
         }));
         handleCancel();
     }
@@ -62,7 +66,10 @@ const ParentStackholderEditModal = ({ parent, isOpen, closeModal }: ParentStackh
                 onFinish={handleSubmit}
                 form={form}
                 size={"large"}
-                initialValues={parent}
+                initialValues={{
+                    ...parent,
+                    child_name: (parent.child_name as string).split(', ')
+                }}
             >
                 <Row gutter={[24, 0]}>
                     <Col xs={24} lg={12}>

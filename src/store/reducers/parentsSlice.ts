@@ -8,6 +8,7 @@ import { Parent, parentDefaultObject } from '../../models/Parent';
 import { selectStudents, StudentsState } from './studentsSlice';
 import { RootState } from '../store';
 import { Student } from 'models/Student';
+import { User, userDefaultObject } from 'models/User';
 
 interface ParentsState {
     parents: Parent[],
@@ -72,24 +73,37 @@ export const removeParent = createAsyncThunk(
 
 export const editParent = createAsyncThunk(
     'Parents/editParent',
-    async (payload: Parent, { rejectWithValue, getState }) => {
+    async ({newParent,user,students}: {
+        newParent:Parent,
+        user:User,
+        students:Student[]
+    }, { rejectWithValue }) => {
         try {
-            payload.number_of_children = payload.child_name.length.toString();
+
+            newParent.number_of_children = newParent.child_name.length.toString();
             let children_names: string[] = [];
-            const { student } = getState() as { student: StudentsState };
-            (payload.child_name as string[]).forEach((childId) => {
-                const childObj = student.students.registered.concat(student.students.unregistered).find(s => s.student_key === childId);
+            (newParent.child_name as string[]).forEach((childId) => {
+                const childObj = students.find(s => s.student_key === childId);
                 children_names.push(childObj?.first_name + " " + childObj?.last_name)
             })
-            payload.child_name = children_names.join(', ');
+            
+            newParent.child_name = children_names.join(', ');
             const refDb = ref(db);
             const updates = {}
             //@ts-ignore
-            updates['/stakeholders/parents/' + payload.objectKey] = omitBy(defaults(payload, parentDefaultObject), isNil);
+            updates['/stakeholders/parents/' + newParent.objectKey] = omitBy(defaults(newParent, parentDefaultObject), isNil);
+            alert(user.user_id);
+            //@ts-ignore
+            updates['/app_users/' + user.user_id] = omitBy(defaults({
+                ...user,
+                child_key: newParent.child_name,
+                parent_key:newParent.objectKey,
+            }, userDefaultObject), isNil);
+
             update(refDb, updates);
             return {
                 code: 200,
-                response: defaults(payload, parentDefaultObject)
+                response: defaults(newParent, parentDefaultObject)
             }
         } catch (e) {
             console.error(e);
@@ -101,9 +115,10 @@ export const editParent = createAsyncThunk(
 
 export const addParent = createAsyncThunk(
     'Parents/addParent',
-    async ({newParent,students}: {
+    async ({newParent,students,user}: {
         newParent:Parent,
-        students:Student[]
+        students:Student[],
+        user:User,
     }, {rejectWithValue}) => {
 
         try {
@@ -118,8 +133,19 @@ export const addParent = createAsyncThunk(
             const response = await push(ref(db, '/stakeholders/parents/'), omitBy(defaults(newParent, parentDefaultObject), isNil))
             const ParentObjectWithId = {
                 ...newParent,
-                objectKey: response.key
+                objectKey: response.key,
             }
+
+            const refDb = ref(db);
+            const updates = {}
+            //@ts-ignore
+            updates['/app_users/' + user.user_id] = omitBy(defaults({
+                ...user,
+                parent_key:response.key,
+                child_key: newParent.child_name
+            }, userDefaultObject), isNil);
+            update(refDb, updates);
+
             return {
 
                 code: 200,

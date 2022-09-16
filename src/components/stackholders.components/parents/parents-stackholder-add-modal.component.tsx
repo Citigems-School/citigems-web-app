@@ -36,7 +36,7 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
     }, [isOpen]);
 
     const handleCancel = () => {
-        if (!isNil(defaultObject) && !isDone ) {
+        if (!isNil(defaultObject) && !isDone) {
             thunkDispatch(removeUser(defaultObject.user_id))
         }
         form.resetFields();
@@ -56,7 +56,8 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                 ...values,
                 child_name: defaultObject ? defaultObject.child_name : values.child_name
             },
-            students: students.registered
+            students: students.registered,
+            user: users.find((user: User) => user.user_id === values.user_id)!
         }));
         setIsDone(true);
         handleExit();
