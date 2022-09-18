@@ -15,6 +15,7 @@ import {
 } from "firebase/storage";
 import { PlusOutlined } from "@ant-design/icons";
 import { app } from "utils/firebase";
+import { useTranslation } from "react-i18next";
 
 interface StudentsStackholderAddModalProps {
     isOpen: boolean;
@@ -23,6 +24,7 @@ interface StudentsStackholderAddModalProps {
 }
 
 const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }: StudentsStackholderAddModalProps) => {
+    const { t } = useTranslation();
 
     const { loading } = useSelector((state: RootState) => state.admins);
     const { classes } = useSelector((state: RootState) => state.classes);
@@ -91,7 +93,7 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                 "state_changed",
                 () => { },
                 () => {
-                    message.error("Upload failed").then();
+                    message.error(t('user.error_upload_failed')).then();
                     setLoadingFile(false);
                 },
                 () => {
@@ -117,12 +119,12 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
     ) {
         const isJpgOrPng = fileBeforeUpload.type === "image/jpeg" || fileBeforeUpload.type === "image/png";
         if (!isJpgOrPng) {
-            message.error("File isn't acceptable").then();
+            message.error(t('user.error_file_unacceptable')).then();
             return;
         }
 
         if (!(fileBeforeUpload.size / 1024 / 1024 < 2)) {
-            message.error("File is too big").then();
+            message.error(t('user.error_big_file')).then();
             return;
         }
         setFile(fileBeforeUpload);
@@ -135,11 +137,11 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
     ) {
         const isJpgOrPng = fileBeforeUpload.type === "image/jpeg" || fileBeforeUpload.type === "image/png";
         if (!isJpgOrPng) {
-            message.error("File isn't acceptable").then();
+            message.error(t('user.error_file_unacceptable')).then();
         }
 
         if (!(fileBeforeUpload.size / 1024 / 1024 < 2)) {
-            message.error("File is too big").then();
+            message.error(t('user.error_big_file')).then();
         }
         setChildImage(fileBeforeUpload);
 
@@ -156,10 +158,10 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Add Student`}
+                title={t('students.add_student')}
             />
             <Form
-                name={"add_parent"}
+                name={"add_student"}
                 layout={"vertical"}
                 onFinish={handleSubmit}
                 form={form}
@@ -169,40 +171,40 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="first_name"
-                            label="First name"
+                            label={t('common.first_name')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
-                            <Input placeholder="First name" />
+                            <Input placeholder={t('common.first_name')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="last_name"
-                            label="Last name"
+                            label={t('common.last_name')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
-                            <Input placeholder="Last name" />
+                            <Input placeholder={t('common.last_name')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="father_first_name"
-                            label="Father's First name"
+                            label={t('students.father_first_name')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
-                            <Input placeholder="Father's First name" />
+                            <Input placeholder={t('students.father_first_name')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
@@ -212,109 +214,109 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
-                            <Input placeholder="Father's Last name" />
+                            <Input placeholder={t('students.father_last_name')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="mother_first_name"
-                            label="Mother's First name"
+                            label={t('students.mother_first_name')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
-                            <Input placeholder="Mother's First name" />
+                            <Input placeholder={t('students.mother_first_name')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="mother_last_name"
-                            label="Mother's Last name"
+                            label={t('students.mother_last_name')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
-                            <Input placeholder="Mother's Last name" />
+                            <Input placeholder={t('students.mother_last_name')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="home_town"
-                            label="Home town"
+                            label={t('students.home_town')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 }
                             ]
                             }
                         >
-                            <Input placeholder="Home Town" />
+                            <Input placeholder={t('students.home_town')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="address"
-                            label="Address"
+                            label={t('students.address')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
-                            <Input placeholder="Address" />
+                            <Input placeholder={t('students.address')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="local_govt_area"
-                            label="Local Govt Area"
+                            label={t('students.local_govt_area')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Input placeholder="Local Govt Area" />
+                            <Input placeholder={t('students.local_govt_area')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="sex"
-                            label="Sex"
+                            label={t("common.sex")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Select placeholder="Sex">
-                                <Option key="male">Male</Option>
-                                <Option key="female">Female</Option>
+                            <Select placeholder={t("common.sex")}>
+                                <Option key="male">{t('common.male')}</Option>
+                                <Option key="female">{t('common.female')}</Option>
                             </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="date_of_birth"
-                            label="Date of Birth"
+                            label={t('students.date_of_birth')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <DatePicker placeholder="Date of birth"
+                            <DatePicker placeholder={t('students.date_of_birth')}
                                 style={{ width: '100%' }}
                                 format="DD/MM/YYYY"
                             />
@@ -323,9 +325,9 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="current_class"
-                            label="Current Class"
+                            label={t('students.current_class')}
                         >
-                            <Select placeholder="Current Class" allowClear showArrow mode="multiple">
+                            <Select placeholder={t('students.current_class')} allowClear showArrow mode="multiple">
                                 {
                                     classes.map(
                                         (classObj: Class) => <Option value={classObj.class_name}>
@@ -341,28 +343,28 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="language_at_home"
-                            label="Language at home"
+                            label={t('students.language_at_home')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Input placeholder="Language at home" />
+                            <Input placeholder={t('students.language_at_home')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="additional_info"
-                            label="Additional Informations"
+                            label={t('students.additional_info')}
                         >
-                            <Input placeholder="Additional Informations" />
+                            <Input placeholder={t('students.additional_info')} />
                         </Form.Item>
                     </Col>
                     <Col xs={12}>
                         <Form.Item
-                            label="Child's Image"
+                            label={t('students.image_child')}
                             style={{ marginBottom: 8 }}
                             name={"image_child"}>
                             <Upload
@@ -388,7 +390,7 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
                     </Col>
                     <Col xs={12}>
                         <Form.Item
-                            label="Birth Certificate Photo"
+                            label={t('students.birth_cert')}
                             style={{ marginBottom: 8 }}
                             name={"birth_cert"}>
                             <Upload

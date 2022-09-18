@@ -6,10 +6,10 @@ import { RootState, useAppThunkDispatch } from "../../store/store";
 import Container from "../public.components/container.component";
 import { isNil } from "lodash";
 import { useState } from "react";
-
-const { ErrorBoundary } = Alert;
+import { useTranslation } from "react-i18next";
 
 const LoginCard = () => {
+    const { t } = useTranslation();
 
     const { pathname } = useLocation();
     const [showError, setShowError] = useState<boolean>(false);
@@ -38,7 +38,7 @@ const LoginCard = () => {
                 }
             }
             catch (e) {
-                message.error("Authentication failed, please try again")
+                message.error(t('user.auth_failed'))
                 console.error(e);
             };
 
@@ -52,7 +52,7 @@ const LoginCard = () => {
                     style={{ margin: screens.lg ? "0 30% 0 30%" : "0" }}
                     bodyStyle={{ padding: screens.lg ? "32px 48px" : "32px 24px" }}>
                     <Typography.Title level={2} style={{ textAlign: "center" }}>
-                        Login to Admin Dashboard
+                        {t('auth.title')}
                     </Typography.Title>
                     <Row style={{ padding: "15px 0" }} justify={"center"}>
                         <img width="200px" src="/images/logo/logo-fulltext.png" />
@@ -65,22 +65,22 @@ const LoginCard = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: "Error"
+                                    message: t("common.error")
                                 },
                                 {
                                     pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-                                    message: "Email is inavlid"
+                                    message: t("common.email_invalid")
                                 }
                             ]}
                             name={"email"}>
                             <Input type={"email"} />
                         </Form.Item>
                         <Form.Item
-                            label={"Password"}
+                            label={t('common.password')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Error"
+                                    message: t("common.error")
                                 }
                             ]}
                             name={"password"}>
@@ -88,17 +88,17 @@ const LoginCard = () => {
                         </Form.Item>
                         <Row justify={"center"}>
                             {showError &&
-                                    <Alert
-                                        message="Error Authentication"
-                                        showIcon
-                                        description="E-mail or password wrong, please try again"
-                                        type="error"
-                                        closable
-                                        style={{ marginBottom: '15px' }}
-                                    />
+                                <Alert
+                                    message={t('auth.auth_error')}
+                                    showIcon
+                                    description={t('auth.auth_error_body')}
+                                    type="error"
+                                    closable
+                                    style={{ marginBottom: '15px' }}
+                                />
                             }
                             <Button style={{ width: '150px' }} loading={loading} type="primary" onClick={loginHandler}>
-                                Login
+                                {t('auth.login')}
                             </Button>
                         </Row>
                     </Form>

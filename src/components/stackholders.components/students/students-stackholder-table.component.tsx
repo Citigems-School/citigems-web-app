@@ -5,6 +5,7 @@ import { CheckboxChangeEvent } from "antd/lib/checkbox/Checkbox";
 import Table, { ColumnProps } from "antd/lib/table";
 import { isNil } from "lodash";
 import { ForwardRefExoticComponent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useWindowDimensions } from "../../../hooks/useWindowDimensions";
 import { Student } from "../../../models/Student";
@@ -17,6 +18,8 @@ const { confirm } = Modal;
 
 
 export default function StudentsStackholderTable() {
+    const { t } = useTranslation();
+
     const thunkDispatch = useAppThunkDispatch();
     const { height } = useWindowDimensions();
     const { loading, students } = useSelector((state: RootState) => state.students);
@@ -56,9 +59,9 @@ export default function StudentsStackholderTable() {
     }
     const openRegisterUnregisteredStudentModal = (student: Student) => {
         confirm({
-            title: 'Are you sure you want register this student?',
-            okText: 'Yes',
-            cancelText: 'No',
+            title: t('students.register_unregistered_student'),
+            okText: t("common.yes"),
+            cancelText: t("common.no"),
             async onOk() {
                 try {
 
@@ -79,7 +82,7 @@ export default function StudentsStackholderTable() {
                     }
 
                 } catch (e) {
-                    message.error("Can't remove Student, please try again")
+                    message.error(t('students.delete_error'))
                     setCurrentStudent(undefined);
                 }
             }
@@ -87,11 +90,11 @@ export default function StudentsStackholderTable() {
     }
     const openDeleteStudentModal = (student: Student) => {
         confirm({
-            title: 'Are you sure delete this Student?',
+            title: t('students.delete_confirm'),
             icon: <CloseCircleOutlined />,
-            okText: 'Yes',
+            okText: t("common.yes"),
             okType: 'danger',
-            cancelText: 'No',
+            cancelText: t("common.no"),
             async onOk() {
                 try {
 
@@ -106,7 +109,7 @@ export default function StudentsStackholderTable() {
                     }
 
                 } catch (e) {
-                    message.error("Can't remove Student, please try again")
+                    message.error(t('students.delete_error'))
                     setCurrentStudent(undefined);
                 }
             }
@@ -119,7 +122,7 @@ export default function StudentsStackholderTable() {
     const columns: ColumnProps<Student>[] = [
         {
             key: "id",
-            title: "Student id",
+            title: t("students.id"),
             width: 3,
             ellipsis: true,
             render: (value, record) => (
@@ -130,7 +133,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "first_name",
-            title: "First name",
+            title: t("common.first_name"),
             dataIndex: "first_name",
             width: 3,
             align: "center",
@@ -139,7 +142,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "last_name",
-            title: "Last name",
+            title: t("common.last_name"),
             dataIndex: "last_name",
             width: 3,
             align: "center",
@@ -148,7 +151,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "father_first_name",
-            title: "Father's First name",
+            title: t("students.father_first_name"),
             dataIndex: "father_first_name",
             width: 3,
             align: "center",
@@ -157,7 +160,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "father_last_name",
-            title: "Father's Last name",
+            title:  t("students.father_last_name"),
             dataIndex: "father_last_name",
             width: 3,
             align: "center",
@@ -166,7 +169,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "mother_first_name",
-            title: "Mother's First name",
+            title: t("students.mother_first_name"),
             dataIndex: "mother_first_name",
             width: 3,
             align: "center",
@@ -175,7 +178,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "mother_last_name",
-            title: "Mother's Last name",
+            title: t("students.mother_last_name"),
             dataIndex: "mother_last_name",
             width: 3,
             align: "center",
@@ -184,7 +187,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "home_town",
-            title: "Home Town",
+            title: t("students.home_town"),
             dataIndex: "home_town",
             render: (value) => value,
             width: 3,
@@ -192,7 +195,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "address",
-            title: "Address",
+            title:  t("students.address"),
             dataIndex: "address",
             width: 3,
             align: "center",
@@ -201,7 +204,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "local_govt_area",
-            title: "Local Govt Area",
+            title: t("students.local_govt_area"),
             dataIndex: "local_govt_area",
             width: 3,
             align: "center",
@@ -210,7 +213,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "sex",
-            title: "Sex",
+            title:  t("common.sex"),
             dataIndex: "sex",
             width: 3,
             align: "center",
@@ -219,7 +222,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "date_of_birth",
-            title: "Date of Birth",
+            title: t("students.date_of_birth"),
             dataIndex: "date_of_birth",
             width: 3,
             align: "center",
@@ -228,7 +231,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "current_class",
-            title: "Current Class",
+            title:t("students.current_class"),
             dataIndex: "current_class",
             width: 3,
             align: "center",
@@ -237,7 +240,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "language_at_home",
-            title: "Language at home",
+            title: t("students.language_at_home"),
             dataIndex: "language_at_home",
             width: 3,
             align: "center",
@@ -246,16 +249,25 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "birth_certificate_photo_url",
-            title: "Birth Certificate",
+            title: t("students.birth_cert"),
             dataIndex: "birth_certificate_photo_url",
             width: 3,
             align: "center",
-            render: (value) => <a target="_blank" href={value}> view certificate</a>,
+            render: (value) => <a target="_blank" href={value}> {t('students.view_cert')}</a>,
             sorter: (a, b) => a.birth_certificate_photo_url?.localeCompare(b.birth_certificate_photo_url || "") || 0
         },
         {
+            key: "image_of_child_url",
+            title: t("students.image_child"),
+            dataIndex: "image_of_child_url",
+            width: 3,
+            align: "center",
+            render: (value) => <a target="_blank" href={value}> {t('students.view_student_photo')}</a>,
+            sorter: (a, b) => a.birth_certificate_photo_url?.localeCompare(b.image_of_child_url || "") || 0
+        },
+        {
             key: "additional_info",
-            title: "Additional Informations",
+            title:  t("students.additional_info"),
             dataIndex: "additional_info",
             width: 3,
             align: "center",
@@ -264,14 +276,14 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "actions",
-            title: "Actions",
+            title: t("common.actions"),
             fixed: "right",
             width: 3,
             render: (value, record) => (
                 <>
                     <Space>
                         {
-                            !isRegistered && <Tooltip title={"Register Student"}>
+                            !isRegistered && <Tooltip title={t('students.register_student')}>
                                 <Button
                                     key={"registerStudent"}
                                     size={"small"}
@@ -287,7 +299,7 @@ export default function StudentsStackholderTable() {
                             </Tooltip>
                         }
 
-                        <Tooltip title={"Edit Student"}>
+                        <Tooltip title={t('students.edit_student')}>
                             <Button
                                 key={"editStudent"}
                                 size={"small"}
@@ -301,7 +313,7 @@ export default function StudentsStackholderTable() {
                                 onClick={() => _handleEdit(record)}
                             />
                         </Tooltip>
-                        <Tooltip title={"Remove Student"}>
+                        <Tooltip title={t('students.remove_student')}>
                             <Button
                                 key={"removeStudent"}
                                 size={"small"}
@@ -338,7 +350,7 @@ export default function StudentsStackholderTable() {
                 <Layout.Content style={{ padding: 24, overflow: "auto" }}>
                     <PageHeader
                         style={{ padding: "0" }}
-                        title={"Students List"}
+                        title={t("students.student_list")}
                         extra={[
                             <Checkbox onChange={onChangeIsRegistered} checked={!isRegistered}>
                                 Show Unregistered Students
@@ -375,7 +387,4 @@ export default function StudentsStackholderTable() {
             </Layout>
         </>
     );
-
-
-
 }

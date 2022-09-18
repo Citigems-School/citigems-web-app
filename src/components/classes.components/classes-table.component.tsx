@@ -4,11 +4,11 @@ import { Button, Layout, message, Modal, PageHeader, Space, Tooltip, Typography 
 import Table, { ColumnProps } from "antd/lib/table";
 import { isNil } from "lodash";
 import { ForwardRefExoticComponent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 import { Class } from "../../models/Class";
 import { removeClass } from "../../store/reducers/classesSlice";
-import { removeUser } from "../../store/reducers/usersSlice";
 import { RootState, useAppThunkDispatch } from "../../store/store";
 import ClassAddModal from "./classes-add-modal.component";
 import ClassEditModal from "./classes-edit-modal.component";
@@ -29,6 +29,9 @@ export default function ClassesTable() {
     const [addUserOpen, setAddUserOpen] = useState<boolean>(false);
     const [editUserOpen, setEditUserOpen] = useState<boolean>(false);
     const [currentUser, setCurrentUser] = useState<Class>()
+
+
+    const {t} = useTranslation();
 
     function displayStudents(value: String) {
         try {
@@ -77,11 +80,11 @@ export default function ClassesTable() {
     }
     const openDeleteUserModal = (classObject: Class) => {
         confirm({
-            title: 'Are you sure delete this Class?',
+            title: t("classes.delete_title"),
             icon: <CloseCircleOutlined />,
-            okText: 'Yes',
+            okText: t('common.yes'),
             okType: 'danger',
-            cancelText: 'No',
+            cancelText: t('common.no'),
             async onOk() {
                 try {
 
@@ -89,11 +92,11 @@ export default function ClassesTable() {
                         await thunkDispatch(removeClass(classObject.class_name))
                         setCurrentUser(undefined);
                     } else {
-                        throw new Error("selected classObject is null");
+                        throw new Error("selected class is null");
                     }
 
                 } catch (e) {
-                    message.error("Can't remove classObject, please try again")
+                    message.error(t("classes.cant_remove_class_error"))
                     setCurrentUser(undefined);
                 }
             },
@@ -109,7 +112,7 @@ export default function ClassesTable() {
     const columns: ColumnProps<Class>[] = [
         {
             key: "class",
-            title: "Class Name",
+            title: t("classes.class_name"),
             width: 2,
             ellipsis: true,
             render: (value, record) => (
@@ -120,7 +123,7 @@ export default function ClassesTable() {
         },
         {
             key: "assigned_teacher_app_key",
-            title: "Teacher",
+            title: t("classes.teacher_name"),
             dataIndex: "assigned_teacher_app_key",
             render: (value) => <Typography.Text ellipsis>
                 {
@@ -131,7 +134,7 @@ export default function ClassesTable() {
         },
         {
             key: "student_ids",
-            title: "Student",
+            title: t("classes.student"),
             dataIndex: "student_ids",
             render: (value) => <Typography.Text ellipsis>
                 {displayStudents(value)}
@@ -140,15 +143,15 @@ export default function ClassesTable() {
         },
         {
             key: "actions",
-            title: "Actions",
+            title: t("common.actions"),
             fixed: "right",
             width: 2,
             render: (value, record) => (
                 <>
                     <Space>
-                        <Tooltip title={"Edit"}>
+                        <Tooltip title={t("classes.edit")}>
                             <Button
-                                key={"edit"}
+                                key={"editclass"}
                                 size={"small"}
                                 icon={
                                     <Icon
@@ -160,9 +163,9 @@ export default function ClassesTable() {
                                 onClick={() => _handleEdit(record)}
                             />
                         </Tooltip>
-                        <Tooltip title={"Remove Class"}>
+                        <Tooltip title={t("classes.remove_class")}>
                             <Button
-                                key={"removeuser"}
+                                key={"removeclass"}
                                 size={"small"}
                                 icon={
                                     <Icon
@@ -193,9 +196,9 @@ export default function ClassesTable() {
                 <Layout.Content style={{ padding: 24, overflow: "auto" }}>
                     <PageHeader
                         style={{ padding: "0" }}
-                        title={"Classes List"}
+                        title={t("classes.class_list")}
                         extra={
-                            <Button onClick={() => _handleAddUser()}>Add Class</Button>
+                            <Button onClick={() => _handleAddUser()}>{t('classes.add_class')}</Button>
                         }
                     /> <br />
                     <Table<Class>

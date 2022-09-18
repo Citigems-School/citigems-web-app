@@ -5,6 +5,7 @@ import Upload, { RcFile } from "antd/lib/upload";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { isNil } from "lodash";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, signupInit } from "store/reducers/userSlice";
 import { app } from "utils/firebase";
@@ -38,6 +39,8 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
     const [file, setFile] = useState<UploadFile>();
     const [loadingFile, setLoadingFile] = useState(false);
 
+    const { t } = useTranslation();
+
 
     function closeSecondModal() {
         setOpenSecondModal(false);
@@ -70,19 +73,19 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
             if (payload && payload.code) {
                 switch (payload.code) {
                     case "auth/email-already-in-use": {
-                        message.error("Already exists an account with the given email address.")
+                        message.error(t("user.error_email_already_in_use"))
                         break;
                     }
                     case "auth/invalid-email": {
-                        message.error("The email address is not valid")
+                        message.error(t("user.error_invalid_email"))
                         break;
                     }
                     case "auth/operation-not-allowed": {
-                        message.error("Email/Password accounts are not enabled. Enable email/password accounts in the Firebase Console, under the Auth tab.")
+                        message.error(t("user.operation_not_allowed"))
                         break;
                     }
                     case "auth/weak-password": {
-                        message.error("The password is not strong enough.")
+                        message.error(t("user.error_weak_password"))
                         break;
                     }
                 }
@@ -92,11 +95,11 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                 const userData: User = { ...values, user_id: response.payload as string, photo_url: photo_url };
                 const result = await thunkDispatch(addUser(userData));
                 Modal.info({
-                    title: 'Generated user password',
+                    title: t('generated_password_title'),
                     content: (
                         <div>
                             <code>{password}</code>
-                            <p>Save the password in safe place</p>
+                            <p>{t('user.generated_password_body')}</p>
                         </div>
                     ),
                     onOk() {
@@ -200,7 +203,7 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                 "state_changed",
                 () => { },
                 () => {
-                    message.error("Upload failed").then();
+                    message.error(t("user.error_upload_failed")).then();
                     setLoadingFile(false);
                 },
                 () => {
@@ -226,12 +229,12 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
     ) {
         const isJpgOrPng = fileBeforeUpload.type === "image/jpeg" || fileBeforeUpload.type === "image/png";
         if (!isJpgOrPng) {
-            message.error("File isn't acceptable").then();
+            message.error(t("user.error_file_unacceptable")).then();
             return;
         }
 
         if (!(fileBeforeUpload.size / 1024 / 1024 < 2)) {
-            message.error("File is too big").then();
+            message.error("user.error_big_file").then();
             return;
         }
         setFile(fileBeforeUpload);
@@ -251,10 +254,10 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                 centered>
                 <PageHeader
                     style={{ padding: "0" }}
-                    title={`Add user`}
+                    title={t(`user.add_user`)}
                 />
                 <Form
-                    name={"add_user"}
+                    name="add_user"
                     layout={"vertical"}
                     onFinish={handleSubmit}
                     form={form}
@@ -264,72 +267,72 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                         <Col xs={24} lg={12}>
                             <Form.Item
                                 name="first_name"
-                                label="First name"
+                                label={t("common.first_name")}
                                 rules={[
                                     {
                                         required: true,
-                                        message: "This field is required"
+                                        message: t("common.error_required")
                                     },
                                 ]}>
-                                <Input placeholder="First Name" />
+                                <Input placeholder={t("common.first_name")} />
                             </Form.Item>
                         </Col>
                         <Col xs={24} lg={12}>
                             <Form.Item
                                 name="last_name"
-                                label="Last name"
+                                label={t("common.last_name")}
                                 rules={[
                                     {
                                         required: true,
-                                        message: "This field is required"
+                                        message: t("common.error_required")
                                     },
                                 ]}>
-                                <Input placeholder="Last Name" />
+                                <Input placeholder={t("common.last_name")} />
                             </Form.Item>
                         </Col>
                         <Col xs={24} lg={12}>
                             <Form.Item
                                 name="email"
-                                label="E-mail"
+                                label={t("common.email")}
                                 rules={[
                                     {
                                         required: true,
-                                        message: "This field is required"
+                                        message: t("common.error_required")
                                     },
                                     {
                                         pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-                                        message: "E-mail is invalid"
+                                        message: t("common.email_invalid")
                                     }
                                 ]}>
-                                <Input placeholder="E-mail" />
+                                <Input placeholder={t("common.email")} />
                             </Form.Item>
                         </Col>
                         <Col xs={24} lg={12}>
                             <Form.Item
                                 name="whatsapp_number"
-                                label="WhatsApp Number"
+                                label={t("common.whatsapp_number")}
                                 rules={[
                                     {
                                         required: true,
-                                        message: "This field is required"
+                                        message: t("common.error_required")
                                     },
                                 ]}>
-                                <Input placeholder="WhatsApp Number" />
+                                <Input placeholder={t("common.whatsapp_number")} />
                             </Form.Item>
                         </Col>
                         <Col xs={24} lg={12}>
                             <Form.Item
                                 name="other_numbers"
-                                label="Other Number"
+                                label={t("common.other_numbers")}
                             >
-                                <Input placeholder="Other Number" />
+                                <Input placeholder={t("common.other_numbers")} />
                             </Form.Item>
                         </Col>
                         <Col xs={24} lg={12}>
                             <Form.Item
                                 name="parent_key"
-                                label="Parent">
-                                <Select placeholder="Parent" allowClear>
+                                label={t("parent.parent")}>
+                                <Select placeholder={t("parent.parent")} allowClear>
                                     {
                                         parents.map(
                                             (parent: Parent) => <Option value={parent.objectKey}>
@@ -345,8 +348,8 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                         <Col xs={24} lg={12}>
                             <Form.Item
                                 name="child_key"
-                                label="Child">
-                                <Select value={form.getFieldValue('child_key')} placeholder="Child" allowClear showArrow mode="multiple">
+                                label={t("common.child")}>
+                                <Select value={form.getFieldValue('child_key')} placeholder={t("common.child")} allowClear showArrow mode="multiple">
                                     {
                                         students.registered.map(
                                             (student: Student) => <Option value={student.student_key}>
@@ -362,36 +365,36 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                         <Col xs={24} lg={12}>
                             <Form.Item
                                 name="role"
-                                label="Role"
+                                label={t("common.role")}
                                 rules={[
                                     {
                                         required: true,
-                                        message: "This field is required"
+                                        message: t("common.error_required")
                                     },
                                 ]}>
-                                <Select placeholder="Role" allowClear>
-                                    <Option key="admin">Admin</Option>
-                                    <Option key="parent">Parent</Option>
-                                    <Option key="teacher">Teacher</Option>
-                                    <Option key="guest">Guest</Option>
+                                <Select placeholder={t("common.role")} allowClear>
+                                    <Option key="admin">{t("common.role_admin")}</Option>
+                                    <Option key="parent">{t("common.role_parent")}</Option>
+                                    <Option key="teacher">{t("common.role_teacher")}</Option>
+                                    <Option key="guest">{t("common.role_guest")}</Option>
                                 </Select>
                             </Form.Item>
                         </Col>
                         <Col xs={24} lg={12}>
                             <Form.Item
                                 name="selected_role"
-                                label="Selected Role">
-                                <Select placeholder="Selected Role" allowClear>
-                                    <Option key="Administrator">Administrator</Option>
-                                    <Option key="parent">Parent</Option>
-                                    <Option key="teacher">Teacher</Option>
+                                label={t("user.selected_role")}>
+                                <Select placeholder={t("user.selected_role")} allowClear>
+                                    <Option key="Administrator">{t("user.selected_role_admin")}</Option>
+                                    <Option key="parent">{t("user.selected_role_parent")}</Option>
+                                    <Option key="teacher">{t("user.selected_role_teacher")}</Option>
                                 </Select>
                             </Form.Item>
                         </Col>
 
                         <Col xs={24}>
                             <Form.Item
-                                label="User's Photo"
+                                label={t("user.user_photo")}
                                 style={{ marginBottom: 8, marginTop: 8 }}
                                 name={"user_photo"}>
                                 <Upload
@@ -410,7 +413,9 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                                     {file ? null :
                                         <div>
                                             <PlusOutlined />
-                                            <div style={{ marginTop: 8 }}>Upload</div>
+                                            <div style={{ marginTop: 8 }}>
+                                                {t('common.upload')}
+                                            </div>
                                         </div>
                                     }
                                 </Upload>
@@ -419,7 +424,7 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                         <Col xs={12} md={4} lg={4}>
                             <Form.Item
                                 name="has_child_in_citigems"
-                                label="Has child in citigems?"
+                                label={t("user.has_child_in_citigems")}
                                 valuePropName={"checked"}>
                                 <Switch
                                     checkedChildren={"Yes"}
@@ -430,7 +435,7 @@ const UserAddModal = ({ isOpen, closeModal }: UserAddModalProps) => {
                         <Col xs={12} md={4} lg={4}>
                             <Form.Item
                                 name="enrolled"
-                                label="Enrolled"
+                                label={t("user.enrolled")}
                                 valuePropName={"checked"}>
                                 <Switch
                                     checkedChildren={"Yes"}

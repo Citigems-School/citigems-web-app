@@ -15,8 +15,10 @@ import { RootState, useAppThunkDispatch } from "../../store/store";
 import { ForwardRefExoticComponent, useEffect } from "react";
 import { countUsers } from "../../store/reducers/usersSlice";
 import Icon from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 
 const StaticCards = () => {
+    const {t} = useTranslation();
     const { counts, loading } = useSelector((state: RootState) => state.users);
     const thunkDispatch = useAppThunkDispatch();
 
@@ -27,7 +29,7 @@ const StaticCards = () => {
     return (
         <Row gutter={[16, 16]}>
             <Col xs={24} lg={6}>
-                <StatisticCard color="red" title="Total Users" value={counts.total} icon={
+                <StatisticCard color="red" title={t('dashboard.total_users')} value={counts.total} icon={
                     <Icon
                         className="i20"
                         component={
@@ -37,7 +39,7 @@ const StaticCards = () => {
                 } isLoading={loading} />
             </Col>
             <Col xs={24} lg={6}>
-                <StatisticCard color="red" title="Total Students" value={counts.students} icon={
+                <StatisticCard color="red"  title={t('dashboard.total_students')} value={counts.students} icon={
                     <Icon
                         className="i20"
                         component={
@@ -47,7 +49,7 @@ const StaticCards = () => {
                 } isLoading={loading} />
             </Col>
             <Col xs={24} lg={6}>
-                <StatisticCard color="red" title="Total Teachers" value={counts.teachers} icon={
+                <StatisticCard color="red" title={t("dashboard.total_teachers")} value={counts.teachers} icon={
                     <Icon
                         className="i20"
                         component={
@@ -57,7 +59,7 @@ const StaticCards = () => {
                 } isLoading={loading} />
             </Col>
             <Col xs={24} lg={6}>
-                <StatisticCard color="red" title="Total Parents" value={counts.parents} icon={
+                <StatisticCard color="red" title={t("dashboard.total_parents")} value={counts.parents} icon={
                     <Icon
                         className="i20"
                         component={

@@ -4,6 +4,7 @@ import { Button, Layout, message, Modal, PageHeader, Space, Tooltip, Typography 
 import Table, { ColumnProps } from "antd/lib/table";
 import { isNil } from "lodash";
 import { ForwardRefExoticComponent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useWindowDimensions } from "../../../hooks/useWindowDimensions";
 import { Admin } from "../../../models/Admin";
@@ -16,6 +17,8 @@ const { confirm } = Modal;
 
 
 export default function AdminStackholderTable() {
+    const { t } = useTranslation();
+
     const thunkDispatch = useAppThunkDispatch();
     const { height } = useWindowDimensions();
     const { loading, admins } = useSelector((state: RootState) => state.admins);
@@ -54,11 +57,11 @@ export default function AdminStackholderTable() {
     }
     const openDeleteAdminModal = (admin: Admin) => {
         confirm({
-            title: 'Are you sure delete this Admin?',
+            title: t('admin.delete_confirm'),
             icon: <CloseCircleOutlined />,
-            okText: 'Yes',
+            okText: t("common.yes"),
             okType: 'danger',
-            cancelText: 'No',
+            cancelText: t("common.no"),
             async onOk() {
                 try {
 
@@ -70,7 +73,9 @@ export default function AdminStackholderTable() {
                     }
 
                 } catch (e) {
-                    message.error("Can't remove Admin, please try again")
+                    message.error(
+                        t('admin.error_delete')
+                    )
                     setCurrentAdmin(undefined);
                 }
             },
@@ -86,7 +91,7 @@ export default function AdminStackholderTable() {
     const columns: ColumnProps<Admin>[] = [
         {
             key: "id",
-            title: "User id",
+            title: t("common.user_id"),
             width: 2,
             ellipsis: true,
             render: (value, record) => (
@@ -97,7 +102,7 @@ export default function AdminStackholderTable() {
         },
         {
             key: "name",
-            title: "Name",
+            title: t("common.name"),
             dataIndex: "name",
             width: 2,
             align: "center",
@@ -106,7 +111,7 @@ export default function AdminStackholderTable() {
         },
         {
             key: "email",
-            title: "Email",
+            title: t("common.email"),
             dataIndex: "email",
             render: (value) => value,
             width: 3,
@@ -114,7 +119,7 @@ export default function AdminStackholderTable() {
         },
         {
             key: "whatsapp_number",
-            title: "WhatsApp number",
+            title: t("common.whatsapp_number"),
             dataIndex: "whatsapp_number",
             width: 2,
             align: "center",
@@ -123,7 +128,7 @@ export default function AdminStackholderTable() {
         },
         {
             key: "other_numbers",
-            title: "Other number",
+            title: t("common.other_numbers"),
             dataIndex: "other_numbers",
             width: 2,
             align: "center",
@@ -132,7 +137,7 @@ export default function AdminStackholderTable() {
         },
         {
             key: "responsibilities",
-            title: "Role",
+            title: t("admin.responsibilities"),
             dataIndex: "responsibilities",
             width: 2,
             align: "center",
@@ -141,13 +146,13 @@ export default function AdminStackholderTable() {
         },
         {
             key: "actions",
-            title: "Actions",
+            title: t("common.actions"),
             fixed: "right",
             width: 2,
             render: (value, record) => (
                 <>
                     <Space>
-                        <Tooltip title={"Edit Admin"}>
+                        <Tooltip title={t('admin.edit_admin')}>
                             <Button
                                 key={"editAdmin"}
                                 size={"small"}
@@ -161,7 +166,7 @@ export default function AdminStackholderTable() {
                                 onClick={() => _handleEdit(record)}
                             />
                         </Tooltip>
-                        <Tooltip title={"Remove Admin"}>
+                        <Tooltip title={t('admin.remove_admin')}>
                             <Button
                                 key={"removeAdmin"}
                                 size={"small"}
@@ -194,9 +199,9 @@ export default function AdminStackholderTable() {
                 <Layout.Content style={{ padding: 24, overflow: "auto" }}>
                     <PageHeader
                         style={{ padding: "0" }}
-                        title={"Admins List"}
+                        title={t('admin.admin_list')}
                         extra={
-                            <Button onClick={() => _handleAddAdmin()}>Add Admin</Button>
+                            <Button onClick={() => _handleAddAdmin()}>{t('admin.add_admin')}</Button>
                         }
                     /> <br />
                     <Table<Admin>

@@ -4,6 +4,7 @@ import { Button, Layout, message, Modal, PageHeader, Space, Tooltip, Typography 
 import Table, { ColumnProps } from "antd/lib/table";
 import { isNil } from "lodash";
 import { ForwardRefExoticComponent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 import { User } from "../../models/User";
@@ -16,6 +17,9 @@ const { confirm } = Modal;
 
 
 export default function UsersTable() {
+
+    const { t } = useTranslation();
+
     const thunkDispatch = useAppThunkDispatch();
     const { height } = useWindowDimensions();
     const { loading, users } = useSelector((state: RootState) => state.users);
@@ -58,9 +62,9 @@ export default function UsersTable() {
         confirm({
             title: 'Are you sure delete this User?',
             icon: <CloseCircleOutlined />,
-            okText: 'Yes',
+            okText: t("common.yes"),
             okType: 'danger',
-            cancelText: 'No',
+            cancelText: t("common.no"),
             async onOk() {
                 try {
 
@@ -88,7 +92,7 @@ export default function UsersTable() {
     const columns: ColumnProps<User>[] = [
         {
             key: "id",
-            title: "User id",
+            title: t("common.user_id"),
             width: 2,
             ellipsis: true,
             render: (value, record) => (
@@ -99,7 +103,7 @@ export default function UsersTable() {
         },
         {
             key: "first_name",
-            title: "First name",
+            title: t("common.first_name"),
             dataIndex: "first_name",
             render: (value) => <Typography.Text ellipsis>
                 {value}
@@ -110,7 +114,7 @@ export default function UsersTable() {
         },
         {
             key: "last_name",
-            title: "Last name",
+            title: t("common.last_name"),
             dataIndex: "last_name",
             render: (value) => <Typography.Text ellipsis>
                 {value}
@@ -120,7 +124,7 @@ export default function UsersTable() {
         },
         {
             key: "email",
-            title: "Email",
+            title: t("common.email"),
             dataIndex: "email",
             render: (value) => value,
             width: 3,
@@ -128,7 +132,7 @@ export default function UsersTable() {
         },
         {
             key: "whatsapp_number",
-            title: "WhatsApp number",
+            title: t("common.whatsapp_number"),
             dataIndex: "whatsapp_number",
             width: 2,
             align: "center",
@@ -137,7 +141,7 @@ export default function UsersTable() {
         },
         {
             key: "other_numbers",
-            title: "Other number",
+            title: t("common.other_numbers"),
             dataIndex: "other_numbers",
             width: 2,
             align: "center",
@@ -189,7 +193,7 @@ export default function UsersTable() {
         },
         {
             key: "actions",
-            title: "Actions",
+            title: t("common.actions"),
             fixed: "right",
             width: 2,
             render: (value, record) => (

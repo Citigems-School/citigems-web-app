@@ -4,6 +4,7 @@ import { Button, Layout, message, Modal, PageHeader, Space, Tooltip, Typography 
 import Table, { ColumnProps } from "antd/lib/table";
 import { isNil } from "lodash";
 import { ForwardRefExoticComponent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { selectStudents } from "store/reducers/studentsSlice";
 import { useWindowDimensions } from "../../../hooks/useWindowDimensions";
@@ -17,6 +18,8 @@ const { confirm } = Modal;
 
 
 export default function ParentsStackholderTable() {
+    const { t } = useTranslation();
+
     const thunkDispatch = useAppThunkDispatch();
     const { height } = useWindowDimensions();
     const { loading, parents } = useSelector((state: RootState) => state.parents);
@@ -56,11 +59,11 @@ export default function ParentsStackholderTable() {
     }
     const openDeleteParentModal = (parent: Parent) => {
         confirm({
-            title: 'Are you sure delete this Parent?',
+            title: t('parent.delete_confirm'),
             icon: <CloseCircleOutlined />,
-            okText: 'Yes',
+            okText: t("common.yes"),
             okType: 'danger',
-            cancelText: 'No',
+            cancelText: t("common.no"),
             async onOk() {
                 try {
 
@@ -72,7 +75,7 @@ export default function ParentsStackholderTable() {
                     }
 
                 } catch (e) {
-                    message.error("Can't remove Parent, please try again")
+                    message.error(t('parent.error_delete'))
                     setCurrentParent(undefined);
                 }
             },
@@ -88,7 +91,7 @@ export default function ParentsStackholderTable() {
     const columns: ColumnProps<Parent>[] = [
         {
             key: "id",
-            title: "User id",
+            title: t("common.user_id"),
             width: 2,
             ellipsis: true,
             render: (value, record) => (
@@ -99,7 +102,7 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "name",
-            title: "Name",
+            title: t("common.name"),
             dataIndex: "name",
             width: 2,
             align: "center",
@@ -108,7 +111,7 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "email",
-            title: "Email",
+            title: t("common.email"),
             dataIndex: "email",
             render: (value) => value,
             width: 3,
@@ -116,7 +119,7 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "whatsapp_number",
-            title: "WhatsApp number",
+            title: t("common.whatsapp_number"),
             dataIndex: "whatsapp_number",
             width: 2,
             align: "center",
@@ -125,7 +128,7 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "telegram_number",
-            title: "Telegram number",
+            title: t('parent.telegram'),
             dataIndex: "telegram_number",
             width: 2,
             align: "center",
@@ -134,7 +137,7 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "other_phone_numbers",
-            title: "Other phone numbers",
+            title: t('common.other_numbers'),
             dataIndex: "other_phone_numbers",
             width: 2,
             align: "center",
@@ -143,7 +146,7 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "place_of_work",
-            title: "Place of work",
+            title: t('parent.work_place'),
             dataIndex: "place_of_work",
             width: 2,
             align: "center",
@@ -152,7 +155,7 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "profession",
-            title: "Profession",
+            title: t('parent.profession'),
             dataIndex: "profession",
             width: 2,
             align: "center",
@@ -161,7 +164,7 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "relationship",
-            title: "Relationship",
+            title: t('parent.relationship'),
             dataIndex: "relationship",
             width: 2,
             align: "center",
@@ -170,7 +173,7 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "child_name",
-            title: "Children names",
+            title: t('parent.children_names'),
             dataIndex: "child_name",
             width: 2,
             align: "center",
@@ -179,7 +182,7 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "number_of_children",
-            title: "Number of children",
+            title: t('parent.number_children'),
             dataIndex: "number_of_children",
             width: 2,
             align: "center",
@@ -188,13 +191,13 @@ export default function ParentsStackholderTable() {
         },
         {
             key: "actions",
-            title: "Actions",
+            title: t("common.actions"),
             fixed: "right",
             width: 2,
             render: (value, record) => (
                 <>
                     <Space>
-                        <Tooltip title={"Edit Parent"}>
+                        <Tooltip title={t('parent.edit_parent')}>
                             <Button
                                 key={"editParent"}
                                 size={"small"}
@@ -208,7 +211,7 @@ export default function ParentsStackholderTable() {
                                 onClick={() => _handleEdit(record)}
                             />
                         </Tooltip>
-                        <Tooltip title={"Remove Parent"}>
+                        <Tooltip title={t('parent.remove_parent')}>
                             <Button
                                 key={"removeParent"}
                                 size={"small"}
@@ -241,7 +244,7 @@ export default function ParentsStackholderTable() {
                 <Layout.Content style={{ padding: 24, overflow: "auto" }}>
                     <PageHeader
                         style={{ padding: "0" }}
-                        title={"Parents List"}
+                        title={t('parent.parent_list')}
                         extra={
                             <Button onClick={() => _handleAddParent()}>Add Parent</Button>
                         }

@@ -1,6 +1,7 @@
 import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Class } from "../../models/Class";
 import { Student } from "../../models/Student";
@@ -15,6 +16,8 @@ interface ClassEditModalProps {
 }
 
 const ClassEditModal = ({ classObject, isOpen, closeModal }: ClassEditModalProps) => {
+
+    const {t} = useTranslation();
 
     const { loading } = useSelector((state: RootState) => state.classes);
     const { students } = useSelector((state: RootState) => state.students);
@@ -50,7 +53,7 @@ const ClassEditModal = ({ classObject, isOpen, closeModal }: ClassEditModalProps
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Edit Class`}
+                title={t("classes.edit_class")}
             />
             <Form
                 name={"edit_class"}
@@ -67,7 +70,7 @@ const ClassEditModal = ({ classObject, isOpen, closeModal }: ClassEditModalProps
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="student_ids"
-                            label="Students">
+                            label={t("classes.student")}>
                             <Select placeholder="Students" mode="multiple" allowClear>
                                 {
                                     students.registered.map(
@@ -85,8 +88,8 @@ const ClassEditModal = ({ classObject, isOpen, closeModal }: ClassEditModalProps
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="assigned_teacher_app_key"
-                            label="Teacher">
-                            <Select placeholder="Teacher" allowClear>
+                            label={t("classes.teacher")}>
+                            <Select placeholder={t("classes.teacher")} allowClear>
                                 {
                                     teachers.map(
                                         (teacher: Teacher) => <Option value={teacher.objectKey}>

@@ -1,6 +1,7 @@
 import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Class } from "../../models/Class";
 import { Student } from "../../models/Student";
@@ -14,6 +15,8 @@ interface ClassAddModalProps {
 }
 
 const ClassAddModal = ({ isOpen, closeModal }: ClassAddModalProps) => {
+
+    const {t} = useTranslation();
 
     const { loading } = useSelector((state: RootState) => state.classes);
     const { students } = useSelector((state: RootState) => state.students);
@@ -45,7 +48,7 @@ const ClassAddModal = ({ isOpen, closeModal }: ClassAddModalProps) => {
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Add Class`}
+                title={t('classes.add_class')}
             />
             <Form
                 name={"add_booking_form"}
@@ -56,15 +59,15 @@ const ClassAddModal = ({ isOpen, closeModal }: ClassAddModalProps) => {
             >
                 <Row gutter={[24, 0]}>
                     <Col xs={24} lg={12}>
-                        <Form.Item name="class_name" label="Class name">
-                            <Input placeholder="Class name" />
+                        <Form.Item name={"class_name"} label={t("classes.class_name")}>
+                            <Input placeholder={t("classes.class_name")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="student_ids"
-                            label="Students">
-                            <Select placeholder="Students" mode="multiple" allowClear>
+                            label={t("classes.students")}>
+                            <Select placeholder={t("classes.students")} mode="multiple" allowClear>
                                 {
                                     students.registered.map(
                                         (student: Student) => <Option value={student.student_key}>
@@ -80,8 +83,8 @@ const ClassAddModal = ({ isOpen, closeModal }: ClassAddModalProps) => {
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="assigned_teacher_app_key"
-                            label="Teacher">
-                            <Select placeholder="Teacher" allowClear>
+                            label={t("classes.teacher")}>
+                            <Select placeholder={t("classes.teacher")} allowClear>
                                 {
                                     teachers.map(
                                         (teacher: Teacher) => <Option value={teacher.objectKey}>
@@ -89,7 +92,6 @@ const ClassAddModal = ({ isOpen, closeModal }: ClassAddModalProps) => {
                                                 teacher.name
                                             }
                                         </Option>
-
                                     )
                                 }
                             </Select>

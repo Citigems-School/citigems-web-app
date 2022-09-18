@@ -2,6 +2,7 @@ import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { isNil } from "lodash";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Parent } from "../../../models/Parent";
 import { Student } from "../../../models/Student";
@@ -20,6 +21,7 @@ interface ParentStackholderAddModalProps {
 }
 
 const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddUserModal }: ParentStackholderAddModalProps) => {
+    const { t } = useTranslation();
 
     const { loading } = useSelector((state: RootState) => state.parents);
     const { users } = useSelector((state: RootState) => state.users);
@@ -73,7 +75,7 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Add Parent`}
+                title={t('parent.add_parent')}
             />
             <Form
                 name={"add_parent"}
@@ -89,14 +91,14 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="user_id"
-                            label="User"
+                            label={t("common.user")}
                             rules={!defaultObject ? [
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ] : undefined}>
-                            <Select placeholder="User" disabled={!isNil(defaultObject)}>
+                            <Select placeholder={t("common.user")} disabled={!isNil(defaultObject)}>
                                 {
                                     users.map(
                                         (user: User) => <Option value={user.user_id}>
@@ -112,112 +114,112 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="name"
-                            label="Name"
+                            label={t("common.name")}
                             rules={!defaultObject ? [
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ] : undefined}>
-                            <Input disabled={!isNil(defaultObject)} placeholder="Name" />
+                            <Input disabled={!isNil(defaultObject)} placeholder={t("common.name")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="email"
-                            label="E-mail"
+                            label={t("common.email")}
                             rules={!defaultObject ? [
 
 
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                                 {
                                     pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-                                    message: "E-mail is invalid"
+                                    message: t("common.email_invalid")
                                 }
                             ] : undefined}>
-                            <Input disabled={!isNil(defaultObject)} placeholder="E-mail" />
+                            <Input disabled={!isNil(defaultObject)} placeholder={t("common.email")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="whatsapp_number"
-                            label="WhatsApp Number"
+                            label={t("common.whatsapp_number")}
                             rules={!defaultObject ? [
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ] : undefined}>
-                            <Input disabled={!isNil(defaultObject)} placeholder="WhatsApp Number" />
+                            <Input disabled={!isNil(defaultObject)} placeholder={t("common.whatsapp_number")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="telegram_number"
-                            label="Telegram Number"
+                            label={t("parent.telegram")}
                         >
-                            <Input placeholder="Telegram Number" />
+                            <Input placeholder={t("parent.telegram")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="other_phone_numbers"
-                            label="Other Number"
+                            label={t("common.other_numbers")}
                         >
-                            <Input disabled={!isNil(defaultObject)} placeholder="Other Number" />
+                            <Input disabled={!isNil(defaultObject)} placeholder={t("common.other_numbers")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="place_of_work"
-                            label="Place of work"
+                            label={t("parent.work_place")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Input placeholder="Place of work" />
+                            <Input placeholder={t("parent.work_place")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="profession"
-                            label="Profession"
+                            label={t("parent.profession")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Input placeholder="Profession" />
+                            <Input placeholder={t("parent.profession")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="relationship"
-                            label="Relationship"
+                            label={t("parent.relationship")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Select placeholder="Relationship" allowClear>
+                            <Select placeholder={t("parent.relationship")} allowClear>
                                 <Option value="father">
-                                    Father
+                                    {t('parent.father')}
                                 </Option>
                                 <Option value="mother">
-                                    Mother
+                                    {t('parent.mother')}
                                 </Option>
                                 <Option value="guardian">
-                                    Guardian
+                                    {t('parent.guardian')}
                                 </Option>
                             </Select>
                         </Form.Item>
@@ -225,10 +227,9 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="child_name"
-                            label="Children names"
-
+                            label={t('parent.children_names')}
                         >
-                            <Select value={form.getFieldValue('child_name')} disabled={!isNil(defaultObject)} placeholder="Child" allowClear showArrow mode="multiple">
+                            <Select value={form.getFieldValue('child_name')} disabled={!isNil(defaultObject)} placeholder={t("common.child")} allowClear showArrow mode="multiple">
                                 {
                                     students.registered.map(
                                         (student: Student) => <Option value={student.student_key}>

@@ -3,6 +3,7 @@ import { useForm } from "antd/es/form/Form";
 import { isNil } from "lodash";
 import { Class } from "models/Class";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Teacher } from "../../../models/Teacher";
 import { User } from "../../../models/User";
@@ -20,6 +21,7 @@ interface TeacherStackholderAddModalProps {
 }
 
 const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddUserModal }: TeacherStackholderAddModalProps) => {
+    const { t } = useTranslation();
 
     const { users } = useSelector((state: RootState) => state.users);
     const { loading } = useSelector((state: RootState) => state.teachers);
@@ -67,7 +69,7 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Add Teacher`}
+                title={t('teacher.add_teacher')}
             />
             <Form
                 name={"add_teacher"}
@@ -81,14 +83,14 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="user_id"
-                            label="User Id"
+                            label= {t("common.user")}
                             rules={!defaultObject ? [
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ] : undefined}>
-                            <Select placeholder="User" disabled={!isNil(defaultObject)}>
+                            <Select placeholder={t("common.user")} disabled={!isNil(defaultObject)}>
                                 {
                                     users.map(
                                         (user: User) => <Option value={user.user_id}>
@@ -104,88 +106,88 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="name"
-                            label="Name"
+                            label={t("common.name")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
-                            <Input disabled={!isNil(defaultObject)} placeholder="Name" />
+                            <Input disabled={!isNil(defaultObject)} placeholder={t("common.name")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="phone_number"
-                            label="Phone Number"
+                            label={t("teacher.phone_number")}
                             rules={!defaultObject ? [
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ] : undefined}>
-                            <Input disabled={!isNil(defaultObject)} placeholder="Phone Number" />
+                            <Input disabled={!isNil(defaultObject)} placeholder={t("teacher.phone_number")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="other_numbers"
-                            label="Other Numbers"
+                            label={t("common.other_numbers")}
                         >
-                            <Input disabled={!isNil(defaultObject)} placeholder="Other Numbers" />
+                            <Input disabled={!isNil(defaultObject)} placeholder={t("common.other_numbers")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="sex"
-                            label="Sex"
+                            label={t("common.sex")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Select placeholder="Sex">
-                                <Option key="male">Male</Option>
-                                <Option key="female">Female</Option>
+                            <Select placeholder={t("common.sex")}>
+                                <Option key="male">{t('common.male')}</Option>
+                                <Option key="female">{t('common.female')}</Option>
                             </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="nationality"
-                            label="Nationality"
+                            label={t("teacher.nationality")}
                         >
-                            <Input placeholder="Nationality" />
+                            <Input placeholder={t("teacher.nationality")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="marital_status"
-                            label="Marital Status"
+                            label={t("teacher.marital_status")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Select placeholder="Marital Status">
+                            <Select placeholder={t("teacher.marital_status")}>
                                 <Option value="single">
-                                    Single
+                                    {t("teacher.single")}
                                 </Option>
                                 <Option value="married">
-                                    Married
+                                {t("teacher.married")}
                                 </Option>
                                 <Option value="separated">
-                                    Separated
+                                {t("teacher.separated")}
                                 </Option>
                                 <Option value="divorced">
-                                    Divorced
+                                {t("teacher.divorced")}
                                 </Option>
                                 <Option value="widowed">
-                                    Widowed
+                                {t("teacher.widowed")}
                                 </Option>
                             </Select>
 
@@ -194,15 +196,15 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="classes"
-                            label="Classes"
+                            label={t("teacher.classes")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Select placeholder="Classes" allowClear showArrow mode="multiple">
+                            <Select placeholder={t("teacher.classes")} allowClear showArrow mode="multiple">
                                 {
                                     classes.map(
                                         (classObj: Class) => <Option value={classObj.class_name}>
@@ -218,15 +220,15 @@ const TeacherStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAd
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="salary"
-                            label="Salary"
+                            label={t("teacher.salary")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Input type="number" placeholder="Salary" />
+                            <Input type="number" placeholder={t("teacher.salary")} />
                         </Form.Item>
                     </Col>
                 </Row>

@@ -2,6 +2,7 @@ import { Col, Form, Input, Modal, PageHeader, Row, Select, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { isNil } from "lodash";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Admin } from "../../../models/Admin";
 import { User } from "../../../models/User";
@@ -19,6 +20,7 @@ interface AdminStackholderAddModalProps {
 }
 
 const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddUserModal }: AdminStackholderAddModalProps) => {
+    const { t } = useTranslation();
 
     const { users } = useSelector((state: RootState) => state.users);
     const { loading } = useSelector((state: RootState) => state.admins);
@@ -63,7 +65,7 @@ const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddU
             centered>
             <PageHeader
                 style={{ padding: "0" }}
-                title={`Add admin`}
+                title={t('admin.add_admin')}
             />
             <Form
                 name={"add_booking_form"}
@@ -77,14 +79,14 @@ const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddU
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="user_id"
-                            label="User"
+                            label={t("common.user")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
-                            <Select placeholder="User" disabled={!isNil(defaultObject)}>
+                            <Select placeholder={t("common.user")} disabled={!isNil(defaultObject)}>
                                 {
                                     users.map(
                                         (user: User) => <Option value={user.user_id}>
@@ -100,85 +102,85 @@ const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddU
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="name"
-                            label="Name"
+                            label={t('common.name')}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
                             <Input disabled={
                                 !isNil(defaultObject)
-                            } placeholder="Name" />
+                            } placeholder={t('common.name')} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="email"
-                            label="E-mail"
+                            label={t("common.email")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                                 {
                                     pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-                                    message: "E-mail is invalid"
+                                    message: t("common.email_invalid")
                                 }
                             ]}>
                             <Input disabled={
                                 !isNil(defaultObject)
-                            } placeholder="E-mail" />
+                            } placeholder={t("common.email")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="whatsapp_number"
-                            label="WhatsApp Number"
+                            label={t("common.whatsapp_number")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}>
                             <Input disabled={
                                 !isNil(defaultObject)
-                            } placeholder="WhatsApp Number" />
+                            } placeholder={t("common.whatsapp_number")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="other_numbers"
-                            label="Other Number"
+                            label={t("common.other_numbers")}
                         >
                             <Input disabled={
                                 !isNil(defaultObject)
-                            } placeholder="Other Number" />
+                            } placeholder={t("common.other_numbers")} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="sex"
-                            label="Sex"
+                            label={t("common.sex")}
                             rules={[
                                 {
                                     required: true,
-                                    message: "This field is required"
+                                    message: t("common.error_required")
                                 },
                             ]}
                         >
-                            <Select placeholder="Sex">
-                                <Option key="male">Male</Option>
-                                <Option key="female">Female</Option>
+                            <Select placeholder={t("common.sex")}>
+                                <Option key="male">{t('common.male')}</Option>
+                                <Option key="female">{t('common.female')}</Option>
                             </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="responsibilities"
-                            label="Responsibilities"
+                            label={t("admin.responsibilities")}
                         >
-                            <Input placeholder="Responsibilities" />
+                            <Input placeholder={t("admin.responsibilities")} />
                         </Form.Item>
                     </Col>
                 </Row>

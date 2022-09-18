@@ -66,14 +66,14 @@ export const editClass = createAsyncThunk(
             //@ts-ignore
             updates['/classes/' + payload.class_name] = {
                 ...payload,
-                student_ids: (payload.student_ids as String[]).join(', ')
+                student_ids: payload.student_ids ? (payload.student_ids as String[]).join(', ') : undefined
             };
             update(refDb, updates);
             return {
                 code: 200,
                 response: {
                     ...payload,
-                    student_ids: (payload.student_ids as String[]).join(', ')
+                    student_ids: payload.student_ids ? (payload.student_ids as String[]).join(', ') : undefined
                 }
             }
         } catch (e) {
@@ -90,14 +90,14 @@ export const addClass = createAsyncThunk(
         try {
             await set(ref(db, '/classes/' + payload.class_name), omitBy({
                 ...payload,
-                student_ids: (payload.student_ids as String[]).join(', ')
+                student_ids: payload.student_ids ? (payload.student_ids as String[]).join(', ') : undefined
             }, isNil))
             return {
 
                 code: 200,
                 response: {
                     ...payload,
-                    student_ids: (payload.student_ids as String[]).join(', ')
+                    student_ids: payload.student_ids ? (payload.student_ids as String[]).join(', ') : undefined
                 }
             }
         } catch (e) {
@@ -166,9 +166,7 @@ export const classesSlice = createSlice({
         },
         [addClass.typePrefix + '/fulfilled']: (state, action) => {
             state.loading = false;
-            if (action.payload.code === 200) {
-                state.classes.push(action.payload.response)
-            }
+            state.classes.push(action.payload.response);
         },
         [addClass.typePrefix + '/rejected']: (state, action) => {
             state.loading = false;

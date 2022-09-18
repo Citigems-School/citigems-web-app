@@ -4,6 +4,7 @@ import { Button, Layout, message, Modal, PageHeader, Space, Tooltip, Typography 
 import Table, { ColumnProps } from "antd/lib/table";
 import { isNil } from "lodash";
 import { ForwardRefExoticComponent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useWindowDimensions } from "../../../hooks/useWindowDimensions";
 import { Teacher } from "../../../models/Teacher";
@@ -16,6 +17,8 @@ const { confirm } = Modal;
 
 
 export default function TeachersStackholderTable() {
+    const { t } = useTranslation();
+
     const thunkDispatch = useAppThunkDispatch();
     const { height } = useWindowDimensions();
     const { loading, teachers } = useSelector((state: RootState) => state.teachers);
@@ -54,11 +57,11 @@ export default function TeachersStackholderTable() {
     }
     const openDeleteTeacherModal = (teacher: Teacher) => {
         confirm({
-            title: 'Are you sure delete this Teacher?',
+            title: t('teacher.delete_confirm'),
             icon: <CloseCircleOutlined />,
-            okText: 'Yes',
+            okText: t("common.yes"),
             okType: 'danger',
-            cancelText: 'No',
+            cancelText: t("common.no"),
             async onOk() {
                 try {
 
@@ -70,7 +73,7 @@ export default function TeachersStackholderTable() {
                     }
 
                 } catch (e) {
-                    message.error("Can't remove Teacher, please try again")
+                    message.error(t('teacher.delete_error'))
                     setCurrentTeacher(undefined);
                 }
             },
@@ -86,7 +89,7 @@ export default function TeachersStackholderTable() {
     const columns: ColumnProps<Teacher>[] = [
         {
             key: "user_id",
-            title: "User id",
+            title: t("common.user_id"),
             width: 2,
             ellipsis: true,
             render: (value, record) => (
@@ -97,7 +100,7 @@ export default function TeachersStackholderTable() {
         },
         {
             key: "name",
-            title: "Name",
+            title: t("common.name"),
             dataIndex: "name",
             width: 2,
             align: "center",
@@ -106,16 +109,16 @@ export default function TeachersStackholderTable() {
         },
         {
             key: "phone_number",
-            title: "Phone Number",
+            title: t('teacher.phone_number'),
             dataIndex: "phone_number",
-            align:"center",
+            align: "center",
             render: (value) => value,
             width: 3,
             sorter: (a, b) => a.phone_number?.localeCompare(b.phone_number || "") || 0
         },
         {
             key: "other_numbers",
-            title: "Other numbers",
+            title: t('common.other_numbers'),
             dataIndex: "other_numbers",
             width: 2,
             align: "center",
@@ -124,7 +127,7 @@ export default function TeachersStackholderTable() {
         },
         {
             key: "sex",
-            title: "Sex",
+            title: t('common.sex'),
             dataIndex: "sex",
             width: 2,
             align: "center",
@@ -133,7 +136,7 @@ export default function TeachersStackholderTable() {
         },
         {
             key: "nationality",
-            title: "Nationality",
+            title: t('teacher.nationality'),
             dataIndex: "nationality",
             width: 2,
             align: "center",
@@ -142,7 +145,7 @@ export default function TeachersStackholderTable() {
         },
         {
             key: "marital_status",
-            title: "Marital Status",
+            title: t('teacher.marital_status'),
             dataIndex: "marital_status",
             width: 2,
             align: "center",
@@ -151,7 +154,7 @@ export default function TeachersStackholderTable() {
         },
         {
             key: "classes",
-            title: "Classes",
+            title: t('teacher.classes'),
             dataIndex: "classes",
             width: 2,
             align: "center",
@@ -160,7 +163,7 @@ export default function TeachersStackholderTable() {
         },
         {
             key: "salary",
-            title: "Salary",
+            title: t('teacher.salary'),
             dataIndex: "salary",
             width: 2,
             align: "center",
@@ -169,13 +172,13 @@ export default function TeachersStackholderTable() {
         },
         {
             key: "actions",
-            title: "Actions",
+            title: t("common.actions"),
             fixed: "right",
             width: 2,
             render: (value, record) => (
                 <>
                     <Space>
-                        <Tooltip title={"Edit Teacher"}>
+                        <Tooltip title={t('teacher.edit_teacher')}>
                             <Button
                                 key={"editTeacher"}
                                 size={"small"}
@@ -189,7 +192,7 @@ export default function TeachersStackholderTable() {
                                 onClick={() => _handleEdit(record)}
                             />
                         </Tooltip>
-                        <Tooltip title={"Remove Teacher"}>
+                        <Tooltip title={t('teacher.remove_teacher')}>
                             <Button
                                 key={"removeTeacher"}
                                 size={"small"}
@@ -222,9 +225,9 @@ export default function TeachersStackholderTable() {
                 <Layout.Content style={{ padding: 24, overflow: "auto" }}>
                     <PageHeader
                         style={{ padding: "0" }}
-                        title={"Teachers List"}
+                        title={t("teacher.teacher_list")}
                         extra={
-                            <Button onClick={() => _handleAddTeacher()}>Add Teacher</Button>
+                            <Button onClick={() => _handleAddTeacher()}>{t('teacher.add_teacher')}</Button>
                         }
                     /> <br />
                     <Table<Teacher>
