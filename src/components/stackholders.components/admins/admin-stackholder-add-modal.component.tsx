@@ -56,7 +56,7 @@ const AdminStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAddU
     }
 
     return (
-        <Modal visible={isOpen} width={700}
+        <Modal visible={isOpen} width={700} cancelText={t("common.cancel")}
             confirmLoading={loading}
             onOk={async () => {
                 form.submit();

@@ -17,7 +17,7 @@ interface ClassEditModalProps {
 
 const ClassEditModal = ({ classObject, isOpen, closeModal }: ClassEditModalProps) => {
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const { loading } = useSelector((state: RootState) => state.classes);
     const { students } = useSelector((state: RootState) => state.students);
@@ -45,6 +45,7 @@ const ClassEditModal = ({ classObject, isOpen, closeModal }: ClassEditModalProps
 
     return (
         <Modal visible={isOpen} width={700}
+            cancelText={t("common.cancel")}
             confirmLoading={loading}
             onOk={async () => {
                 form.submit();

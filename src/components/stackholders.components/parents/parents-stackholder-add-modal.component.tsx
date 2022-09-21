@@ -66,7 +66,7 @@ const ParentStackholderAddModal = ({ defaultObject, isOpen, closeModal, closeAdd
     }
 
     return (
-        <Modal visible={isOpen} width={700}
+        <Modal visible={isOpen} width={700} cancelText={t("common.cancel")}
             confirmLoading={loading}
             onOk={async () => {
                 form.submit();

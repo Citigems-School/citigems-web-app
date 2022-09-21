@@ -159,7 +159,7 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
     }
 
     return (
-        <Modal visible={isOpen} width={700}
+        <Modal visible={isOpen} width={700} cancelText={t("common.cancel")}
             confirmLoading={loading || loadingFile}
             onOk={async () => {
                 form.submit();

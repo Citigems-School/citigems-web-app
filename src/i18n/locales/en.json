@@ -34,6 +34,7 @@
         "generated_password_body": "Save the password in safe place",
         "add_user": "Add User",
         "edit_user": "Edit User",
+        "list_user":"User List",
         "selected_role": "Selected Role",
         "selected_role_admin": "Administrator",
         "selected_role_parent": "Parent",
@@ -146,6 +147,7 @@
         "male": "Male",
         "female": "Female",
         "user_id": "User id",
-        "actions": "Actions"
+        "actions": "Actions",
+        "cancel":"Cancel"
     }
 }

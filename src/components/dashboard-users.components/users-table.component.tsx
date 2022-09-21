@@ -154,7 +154,7 @@ export default function UsersTable() {
         */
         {
             key: "parent",
-            title: "Parent",
+            title: t("parent.parent"),
             dataIndex: "parent_key",
             width: 2,
             align: "center",
@@ -163,7 +163,7 @@ export default function UsersTable() {
         },
         {
             key: "child_key",
-            title: "Child",
+            title: t("common.child"),
             dataIndex: "child_key",
             width: 2,
             align: "center",
@@ -175,7 +175,7 @@ export default function UsersTable() {
         },
         {
             key: "role",
-            title: "Role",
+            title: t("common.role"),
             dataIndex: "role",
             width: 2,
             align: "center",
@@ -184,7 +184,7 @@ export default function UsersTable() {
         },
         {
             key: "selected_role",
-            title: "Selected Role",
+            title: t("user.selected_role"),
             dataIndex: "selected_role",
             width: 2,
             align: "center",
@@ -246,7 +246,7 @@ export default function UsersTable() {
                 <Layout.Content style={{ padding: 24, overflow: "auto" }}>
                     <PageHeader
                         style={{ padding: "0" }}
-                        title={"Users List"}
+                        title={t("user.list_user")}
                         extra={
                             <Button onClick={() => _handleAddUser()}>Add User</Button>
                         }

@@ -34,6 +34,7 @@
         "generated_password_body": "Sauvegardez le mot de passe en lieu sûr",
         "add_user": "Ajouter un utilisateur",
         "edit_user": "Modifier un utilisateur",
+        "list_user":"Liste d'utilisateurs",
         "selected_role": "Rôle sélectionné",
         "selected_role_admin": "Administrateur",
         "selected_role_parent": "Parent",
@@ -132,20 +133,22 @@
         "email_invalid": "L'email n'est pas valide",
         "whatsapp_number": "Numéro WhatsApp",
         "other_numbers": "Autres numéros de téléphone",
-        "child": "Child",
+        "child": "Enfant",
         "role": "Role",
         "role_admin": "Admin",
         "role_parent": "Parent",
         "role_teacher": "Enseignant",
         "role_guest": "Visiteur",
         "upload": "Télécharger",
-        "error": "Erreurr",
+        "error": "Erreur",
         "user": "Utilisateur",
         "name": "Nom",
         "sex": "Sexe",
         "male": "Mâle",
         "female": "Femelle",
         "user_id": "Identifiant de l'utilisateur",
-        "actions": "Actions"
+        "actions": "Actions",
+        "cancel":"Annuler"
+
     }
 }

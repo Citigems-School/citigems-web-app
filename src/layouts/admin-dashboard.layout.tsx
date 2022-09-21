@@ -19,6 +19,7 @@ import { getTeachers } from '../store/reducers/teachersSlice';
 import { getClasses } from '../store/reducers/classesSlice';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
+import ChangeLanguageDropdown from 'components/change-lang-dropdown.component';
 
 const { Header, Content, Sider } = Layout;
 
@@ -146,8 +147,13 @@ const AdminDashboardLayout = () => {
                         }}
                         inlineIndent={20} />
                 </Sider>
-                <Layout className="site-layout">
+                <Layout className="site-layout" style={{ paddingLeft: '10px', paddingRight: '10px' }}>
                     <Header style={{ padding: 0, backgroundColor: "transparent" }} />
+                    <div style={{ display: 'flex' }}>
+                        <div style={{ flex: '1' }}></div>
+                        <ChangeLanguageDropdown />
+                    </div>
+
                     <Content style={{ margin: '0 16px' }}>
                         <Outlet />
                     </Content>

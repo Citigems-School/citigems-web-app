@@ -150,7 +150,8 @@ const StudentsStackholderAddModal = ({ type = "registered", isOpen, closeModal }
 
     return (
         <Modal visible={isOpen} width={700}
-            confirmLoading={loading || loadingFile}
+         cancelText={t("common.cancel")} 
+        confirmLoading={loading || loadingFile}
             onOk={async () => {
                 form.submit();
             }}
