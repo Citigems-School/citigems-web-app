@@ -21,7 +21,7 @@
         "scores":"Scores"
     },
     "classes": {
-        "delete_title": "Are you sure delete this Class?",
+        "delete_title": "Are you sure you want to delete this class?",
         "cant_remove_class_error": "Can't remove class, please try again",
         "class_name": "Class Name",
         "teacher_name": "Teacher name",
@@ -36,7 +36,7 @@
         "edit": "Edit"
     },
     "user": {
-        "error_email_already_in_use": "Already exists an account with the given email address.",
+        "error_email_already_in_use": "An account with the given email address already exists.",
         "error_invalid_email": "The email address is not valid",
         "error_operation_not_allowed": "Email/Password accounts are not enabled. Enable email/password accounts in the Firebase Console, under the Auth tab.",
         "error_weak_password": "The password is not strong enough.",
@@ -44,7 +44,7 @@
         "error_file_unacceptable": "File isn't acceptable",
         "error_big_file": "File is too big",
         "generated_password_title": "Generated user password",
-        "generated_password_body": "Save the password in safe place",
+        "generated_password_body": "Store the password in safe place",
         "add_user": "Add User",
         "edit_user": "Edit User",
         "remove_user":"Remove User",
@@ -56,11 +56,11 @@
         "user_photo": "User's Photo",
         "has_child_in_citigems": "Has child in citigems?",
         "enrolled": "Enrolled",
-        "delete_user_confirmation":"Are you sure delete this User?"
+        "delete_user_confirmation":"Are you sure you want to delete this user?"
     },
     "auth": {
         "auth_failed": "Authentication failed, please try again",
-        "title": "Login to Admin Dashboard",
+        "title": "Login to Citigems Dashboard",
         "auth_error": "Error Authentication",
         "auth_error_body": "E-mail or password wrong, please try again",
         "login": "Login"
@@ -70,8 +70,8 @@
         "edit_admin": "Edit Admin",
         "remove_admin": "Remove Admin",
         "responsibilities": "Responsibilities",
-        "delete_confirm": "Are you sure delete this Admin?",
-        "error_delete": "Can't remove Admin, please try again",
+        "delete_confirm": "Are you sure you want to delete this admin?",
+        "error_delete": "Can't remove this admin, please try again",
         "admin_list": "Admins List"
     },
     "parent": {
@@ -89,8 +89,8 @@
         "guardian": "Guardian",
         "children_names": "Children names",
         "number_children": "Number of children",
-        "delete_confirm": "Are you sure delete this Parent?",
-        "error_delete": "Can't remove Parent, please try again"
+        "delete_confirm": "Are you sure you want to delete this parent?",
+        "error_delete": "Can't remove this parent, please try again"
     },
     "students": {
         "add_student": "Add Student",
@@ -110,9 +110,9 @@
         "additional_info": "Additional Informations",
         "image_child": "Child's Image",
         "birth_cert": "Birth Certificate Photo",
-        "register_unregistered_student": "Are you sure you want register this student?",
-        "delete_confirm": "Are you sure delete this Student?",
-        "delete_error": "Can't remove Student, please try again",
+        "register_unregistered_student": "Are you sure you want to register this student?",
+        "delete_confirm": "Are you sure you want to delete this student?",
+        "delete_error": "Can't remove this student, please try again",
         "id": "Student id",
         "view_cert": "View certificate",
         "view_student_photo": "View student's photo",
@@ -134,8 +134,8 @@
         "widowed": "Widowed",
         "classes": "Classes",
         "salary": "Salary",
-        "delete_confirm": "Are you sure delete this Teacher?",
-        "delete_error": "Can't remove Teacher, please try again"
+        "delete_confirm": "Are you sure you want to delete this teacher?",
+        "delete_error": "Can't remove this teacher, please try again"
     },
     "common": {
         "yes": "Yes",
