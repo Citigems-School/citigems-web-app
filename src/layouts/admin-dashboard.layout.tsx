@@ -40,49 +40,51 @@ function getItem(
 }
 
 
-const items: MenuItem[] = [
-    getItem('Dashboard', '/admin/dashboard', <PieChartOutlined />),
-    getItem('Users', '/admin/dashboard/users', <UserOutlined />),
-    getItem('Stakeholders', 'stakeholders', <TeamOutlined />, [
-        getItem('Admins', '/admin/dashboard/stakeholders/admins'),
-        getItem('Parents', '/admin/dashboard/stakeholders/parents'),
-        getItem('Students', '/admin/dashboard/stakeholders/students'),
-        getItem('Teachers', '/admin/dashboard/stakeholders/teachers'),
 
-    ]),
-    getItem('Classes', '/admin/dashboard/classes',
-        <Icon
-            className="i20"
-            component={
-                Class20Regular as ForwardRefExoticComponent<any>
-            }
-        />
-    ),
-    getItem('Announcement', '/admin/dashboard/announcements',
-        <Icon
-            className="i20"
-            component={
-                DocumentOnePage20Regular as ForwardRefExoticComponent<any>
-            }
-        />
-    ),
-    getItem('Articles', '/admin/dashboard/articles',
-        <Icon
-            className="i20"
-            component={
-                DocumentText20Regular as ForwardRefExoticComponent<any>
-            }
-        />
-    ),
-    getItem('Records', 'records', <TeamOutlined />, [
-        getItem('Attendance', 'admin/dashboard/records/attendance'),
-        getItem('Scores', 'admin/dashboard/scores'),
-    ]),
-];
 
 
 const AdminDashboardLayout = () => {
     const { t } = useTranslation();
+
+    const items: MenuItem[] = [
+        getItem(t('dashboard.dashboard'), '/admin/dashboard', <PieChartOutlined />),
+        getItem(t('dashboard.users'), '/admin/dashboard/users', <UserOutlined />),
+        getItem(t('dashboard.stakeholders'), 'stakeholders', <TeamOutlined />, [
+            getItem(t('dashboard.admins'), '/admin/dashboard/stakeholders/admins'),
+            getItem(t('dashboard.parents'), '/admin/dashboard/stakeholders/parents'),
+            getItem(t('dashboard.students'), '/admin/dashboard/stakeholders/students'),
+            getItem(t('dashboard.teachers'), '/admin/dashboard/stakeholders/teachers'),
+    
+        ]),
+        getItem(t('dashboard.classes'), '/admin/dashboard/classes',
+            <Icon
+                className="i20"
+                component={
+                    Class20Regular as ForwardRefExoticComponent<any>
+                }
+            />
+        ),
+        getItem(t('dashboard.announcement'), '/admin/dashboard/announcements',
+            <Icon
+                className="i20"
+                component={
+                    DocumentOnePage20Regular as ForwardRefExoticComponent<any>
+                }
+            />
+        ),
+        getItem(t('dashboard.articles'), '/admin/dashboard/articles',
+            <Icon
+                className="i20"
+                component={
+                    DocumentText20Regular as ForwardRefExoticComponent<any>
+                }
+            />
+        ),
+        getItem(t('dashboard.records'), '/admin/dashboard/records', <TeamOutlined />, [
+            getItem(t('dashboard.attendance'), 'admin/dashboard/records/attendance'),
+            getItem(t('dashboard.scores'), 'admin/dashboard/scores'),
+        ]),
+    ];
 
     const [collapsed, setCollapsed] = useState(false);
     const location = useLocation();

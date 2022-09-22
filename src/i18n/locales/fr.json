@@ -5,7 +5,20 @@
         "total_users": "Nombre d'utilisateurs",
         "total_students": "Nombre d'eleves",
         "total_teachers": "Nombre d'enseignant(e)s",
-        "total_parents": "Nombre de parents"
+        "total_parents": "Nombre de parents",
+        "dashboard":"",
+        "users":"",
+        "stakeholders":"",
+        "admins":"",
+        "parents":"",
+        "students":"",
+        "teachers":"",
+        "classes":"",
+        "announcement":"",
+        "articles":"",
+        "records":"",
+        "attendance":"",
+        "scores":""
     },
     "classes": {
         "delete_title": "Etes-vous sur de vouloir supprimer cette classe ?",
@@ -101,7 +114,9 @@
         "id": "Identifiant de l'élève",
         "view_cert": "Afficher le certificat",
         "view_student_photo": "Afficher la photo de l'élève",
-        "register_student": "Inscrire l'élève"
+        "register_student": "Inscrire l'élève",
+        "show_unregis_students":""
+
     },
     "teacher": {
         "add_teacher": "Ajouter un(e) enseignant(e)",

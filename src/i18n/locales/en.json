@@ -5,7 +5,20 @@
         "total_users": "Total Users",
         "total_students": "Total Students",
         "total_teachers": "Total Teachers",
-        "total_parents": "Total Parents"
+        "total_parents": "Total Parents",
+        "dashboard":"Dashboard",
+        "users":"Users",
+        "stakeholders":"Stakeholders",
+        "admins":"Admins",
+        "parents":"Parents",
+        "students":"Students",
+        "teachers":"Teachers",
+        "classes":"Classes",
+        "announcement":"Announcement",
+        "articles":"Articles",
+        "records":"Records",
+        "attendance":"Attendance",
+        "scores":"Scores"
     },
     "classes": {
         "delete_title": "Are you sure delete this Class?",
@@ -101,7 +114,8 @@
         "id": "Student id",
         "view_cert": "View certificate",
         "view_student_photo": "View student's photo",
-        "register_student": "Register Student"
+        "register_student": "Register Student",
+        "show_unregis_students":"Show Unregistered Students"
     },
     "teacher": {
         "add_teacher": "Add Teacher",

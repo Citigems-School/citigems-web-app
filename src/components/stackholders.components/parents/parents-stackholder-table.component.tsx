@@ -246,7 +246,9 @@ export default function ParentsStackholderTable() {
                         style={{ padding: "0" }}
                         title={t('parent.parent_list')}
                         extra={
-                            <Button onClick={() => _handleAddParent()}>Add Parent</Button>
+                            <Button onClick={() => _handleAddParent()}>
+                                {t('parent.add_parent')}
+                            </Button>
                         }
                     /> <br />
                     <Table<Parent>

@@ -160,7 +160,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "father_last_name",
-            title:  t("students.father_last_name"),
+            title: t("students.father_last_name"),
             dataIndex: "father_last_name",
             width: 3,
             align: "center",
@@ -195,7 +195,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "address",
-            title:  t("students.address"),
+            title: t("students.address"),
             dataIndex: "address",
             width: 3,
             align: "center",
@@ -213,7 +213,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "sex",
-            title:  t("common.sex"),
+            title: t("common.sex"),
             dataIndex: "sex",
             width: 3,
             align: "center",
@@ -231,7 +231,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "current_class",
-            title:t("students.current_class"),
+            title: t("students.current_class"),
             dataIndex: "current_class",
             width: 3,
             align: "center",
@@ -267,7 +267,7 @@ export default function StudentsStackholderTable() {
         },
         {
             key: "additional_info",
-            title:  t("students.additional_info"),
+            title: t("students.additional_info"),
             dataIndex: "additional_info",
             width: 3,
             align: "center",
@@ -353,9 +353,13 @@ export default function StudentsStackholderTable() {
                         title={t("students.student_list")}
                         extra={[
                             <Checkbox onChange={onChangeIsRegistered} checked={!isRegistered}>
-                                Show Unregistered Students
+                                {
+                                    t('students.show_unregis_students')
+                                }
                             </Checkbox>,
-                            <Button onClick={() => _handleAddStudent()}>Add Student</Button>
+                            <Button onClick={() => _handleAddStudent()}>
+                                {t('students.add_student')}
+                            </Button>
                         ]}
                     /> <br />
                     <Table<Student>
