@@ -248,7 +248,9 @@ export default function UsersTable() {
                         style={{ padding: "0" }}
                         title={t("user.list_user")}
                         extra={
-                            <Button onClick={() => _handleAddUser()}>Add User</Button>
+                            <Button onClick={() => _handleAddUser()}>
+                                {t('user.add_user')}
+                            </Button>
                         }
                     /> <br />
                     <Table<User>

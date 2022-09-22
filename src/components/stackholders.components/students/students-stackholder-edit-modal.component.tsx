@@ -226,7 +226,7 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                     <Col xs={24} lg={12}>
                         <Form.Item
                             name="father_last_name"
-                            label="Father's Last name"
+                            label={t('students.father_last_name')}
                             rules={[
                                 {
                                     required: true,
@@ -396,7 +396,7 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                                 {childImage[0] ? null :
                                     <div>
                                         <PlusOutlined />
-                                        <div style={{ marginTop: 8 }}>Upload</div>
+                                        <div style={{ marginTop: 8 }}>{t("common.upload")}</div>
                                     </div>
                                 }
                             </Upload>
@@ -424,7 +424,7 @@ const StudentStackholderEditModal = ({ type = "registered", student, isOpen, clo
                                 {files[0] ? null :
                                     <div>
                                         <PlusOutlined />
-                                        <div style={{ marginTop: 8 }}>Upload</div>
+                                        <div style={{ marginTop: 8 }}>{t("common.upload")}</div>
                                     </div>
                                 }
                             </Upload>
