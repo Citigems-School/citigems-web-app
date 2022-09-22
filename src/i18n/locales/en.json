@@ -47,6 +47,7 @@
         "generated_password_body": "Save the password in safe place",
         "add_user": "Add User",
         "edit_user": "Edit User",
+        "remove_user":"Remove User",
         "list_user":"User List",
         "selected_role": "Selected Role",
         "selected_role_admin": "Administrator",
@@ -54,7 +55,8 @@
         "selected_role_teacher": "Teacher",
         "user_photo": "User's Photo",
         "has_child_in_citigems": "Has child in citigems?",
-        "enrolled": "Enrolled"
+        "enrolled": "Enrolled",
+        "delete_user_confirmation":"Are you sure delete this User?"
     },
     "auth": {
         "auth_failed": "Authentication failed, please try again",

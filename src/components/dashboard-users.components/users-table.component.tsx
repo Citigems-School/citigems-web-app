@@ -60,7 +60,7 @@ export default function UsersTable() {
     }
     const openDeleteUserModal = (user: User) => {
         confirm({
-            title: 'Are you sure delete this User?',
+            title: t('user.delete_user_confirmation'),
             icon: <CloseCircleOutlined />,
             okText: t("common.yes"),
             okType: 'danger',
@@ -199,7 +199,7 @@ export default function UsersTable() {
             render: (value, record) => (
                 <>
                     <Space>
-                        <Tooltip title={"Edit User"}>
+                        <Tooltip title={t('user.edit_user')}>
                             <Button
                                 key={"edituser"}
                                 size={"small"}
@@ -213,7 +213,7 @@ export default function UsersTable() {
                                 onClick={() => _handleEdit(record)}
                             />
                         </Tooltip>
-                        <Tooltip title={"Remove User"}>
+                        <Tooltip title={t('user.remove_user')}>
                             <Button
                                 key={"removeuser"}
                                 size={"small"}

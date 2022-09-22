@@ -47,6 +47,7 @@
         "generated_password_body": "Sauvegardez le mot de passe en lieu sûr",
         "add_user": "Ajouter un utilisateur",
         "edit_user": "Modifier un utilisateur",
+        "remove_user":"Supprimer un utilisateur",
         "list_user":"Liste d'utilisateurs",
         "selected_role": "Rôle sélectionné",
         "selected_role_admin": "Administrateur",
@@ -54,7 +55,9 @@
         "selected_role_teacher": "Enseignant(e)",
         "user_photo": "Photo de l'utilisateur",
         "has_child_in_citigems": "A un enfant dans Citigems?",
-        "enrolled": "Inscrits"
+        "enrolled": "Inscrits",
+        "delete_user_confirmation":""
+
     },
     "auth": {
         "auth_failed": "L'authentification a échoué, veuillez réessayer",
